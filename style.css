@@ -1,10 +1,17 @@
+/* ========== GLOBAL STYLES ========== */
+
+/* Reset box model for all elements */
 * { box-sizing: border-box; }
+
+/* Base styles for html and body - full viewport height/width, no overflow */
 html,body {
   margin:0; padding:0; height:100%; width:100%; overflow:hidden;
   font-family: Tahoma, "Segoe UI", Arial, sans-serif;
   font-size:12px;
   -webkit-font-smoothing:none;
 }
+
+/* Body background - teal color with diagonal pattern overlay for retro OS look */
 body {
   background:#008080;
   background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0 2px, transparent 2px 4px);
@@ -13,7 +20,10 @@ body {
   user-select:none;
 }
 
-/* ---------- 3D bevel helpers ---------- */
+/* ========== 3D BEVEL EFFECTS ========== */
+/* These classes create the classic beveled/embossed look of Windows 95 */
+
+/* .raised - Creates a button/element that appears raised/protruding */
 .raised {
   box-shadow:
     inset -1px -1px 0 #000000,
@@ -22,6 +32,8 @@ body {
     inset 2px 2px 0 #dfdfdf;
   background:#c0c0c0;
 }
+
+/* .sunken - Creates a button/element that appears pressed/recessed */
 .sunken {
   box-shadow:
     inset 1px 1px 0 #000000,
@@ -30,6 +42,8 @@ body {
     inset -2px -2px 0 #dfdfdf;
   background:#c0c0c0;
 }
+
+/* .field-sunken - Creates input field appearance (white background, sunken look) */
 .field-sunken {
   box-shadow:
     inset 1px 1px 0 #000000,
@@ -38,13 +52,18 @@ body {
   background:#ffffff;
 }
 
-/* ---------- Desktop icons ---------- */
+/* ========== DESKTOP ICONS ========== */
+/* The desktop area holds application/folder icons arranged in a grid */
+
+/* #desktop - Container for all desktop icons, positioned above taskbar */
 #desktop {
   position:absolute; top:0; left:0; right:0; bottom:36px;
   padding:10px;
   display:flex; flex-direction:column; flex-wrap:wrap; align-content:flex-start;
   gap:2px;
 }
+
+/* .icon - Individual icon container with label (each icon is ~74x74px) */
 .icon {
   width:74px; height:74px;
   display:flex; flex-direction:column; align-items:center;
@@ -52,7 +71,11 @@ body {
   margin-bottom:6px;
   border:1px dotted transparent;
 }
+
+/* Icon image/glyph - the visual icon graphic */
 .icon .glyph { width:32px; height:32px; margin-bottom:4px; }
+
+/* Icon label - text below the icon */
 .icon .label {
   color:#fff; text-shadow:1px 1px 1px #000;
   text-align:center; line-height:1.15; font-size:11px;
@@ -60,10 +83,15 @@ body {
   max-width:72px;
   word-wrap:break-word;
 }
+
+/* Selected icon styling - white border and dark blue background on label */
 .icon.selected .label { background:#000080; color:#fff; text-shadow:none; }
 .icon.selected { border:1px dotted #fff; }
 
-/* ---------- Windows ---------- */
+/* ========== WINDOWS ========== */
+/* Main window container and all related components */
+
+/* .win - Main window container with raised bevel effect */
 .win {
   position:absolute;
   min-width:220px; min-height:150px;
@@ -76,7 +104,11 @@ body {
   display:flex; flex-direction:column;
   padding:3px;
 }
+
+/* Inactive window title bar - darker gray when not focused */
 .win.inactive .titlebar { background:#808080; }
+
+/* .titlebar - Window title bar with blue gradient background, holds window title and buttons */
 .titlebar {
   height:20px; flex:0 0 20px;
   background:linear-gradient(90deg,#000080,#1084d0);
@@ -86,8 +118,14 @@ body {
   color:#fff; font-weight:bold; font-size:12px;
   user-select:none;
 }
+
+/* Title bar text container - handles window name text and icon */
 .titlebar .ttext { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; padding-left:2px; display:flex; align-items:center; gap:4px;}
+
+/* Title bar icon - window icon displayed next to title */
 .titlebar .ticon { width:14px; height:14px; flex:0 0 14px; }
+
+/* .tbtn - Title bar buttons (minimize, maximize, close) with raised appearance */
 .tbtn {
   width:16px; height:14px; margin-left:2px;
   background:#c0c0c0;
@@ -97,48 +135,84 @@ body {
   line-height:1;
   cursor:default;
 }
+
+/* Title bar button when pressed/active */
 .tbtn:active {
   box-shadow: inset 1px 1px 0 #000, inset -1px -1px 0 #fff, inset 2px 2px 0 #808080;
 }
+
+/* .menubar - Menu bar below title bar (File, Edit, View, etc.) */
 .menubar {
   display:flex; gap:10px; background:#c0c0c0; padding:2px 6px; font-size:12px; flex:0 0 auto;
   border-bottom:1px solid #808080;
 }
+
+/* Menu items - individual menu entries */
 .menubar span { padding:1px 4px; }
+
+/* Menu item hover effect - dark blue background */
 .menubar span:hover { background:#000080; color:#fff; }
+
+/* .win-body - Main content area of the window */
 .win-body {
   flex:1; overflow:auto; background:#c0c0c0; padding:8px;
   box-shadow: inset 1px 1px 0 #808080;
 }
+
+/* White variant of window body (for dialog boxes or documents) */
 .win-body.white { background:#fff; box-shadow:none; margin:2px; }
+
+/* .win-statusbar - Status bar at bottom of window showing info */
 .win-statusbar {
   flex:0 0 20px; display:flex; align-items:center; gap:8px; padding:0 4px;
   font-size:11px;
 }
+
+/* Individual status pane with sunken appearance */
 .status-pane { flex:1; padding:1px 6px;
   box-shadow: inset -1px -1px 0 #ffffff, inset 1px 1px 0 #808080; }
 
+/* Resize handle - diagonal lines in bottom-right corner of window */
 .resize-handle {
   position:absolute; right:0; bottom:0; width:14px; height:14px; cursor:nwse-resize;
 }
 
-/* file list rows */
+/* ========== FILE LIST / DOCUMENT VIEWS ========== */
+
+/* File list row - each file/folder entry in a list */
 .file-row { display:flex; align-items:center; gap:6px; padding:3px 2px; }
+
+/* File row hover effect - dark blue highlight */
 .file-row:hover { background:#000080; color:#fff; }
+
+/* File row icons - file type icons */
 .file-row img, .file-row .fico { width:20px; height:20px; }
+
+/* Document view heading */
 .doc-view h3 { margin-top:0; }
+
+/* Preformatted text in document view */
 .doc-view pre { white-space:pre-wrap; font-family: "Courier New", monospace; font-size:12px; }
+
+/* Back button styling */
 .backbtn { margin-bottom:6px; }
 
-/* Buttons generic */
+/* ========== BUTTONS ========== */
+
+/* .btn95 - Generic Windows 95 style button */
 .btn95 {
   background:#c0c0c0; border:none; padding:3px 10px; font-family:inherit; font-size:12px;
   box-shadow: inset -1px -1px 0 #000, inset 1px 1px 0 #fff, inset -2px -2px 0 #808080, inset 2px 2px 0 #dfdfdf;
   cursor:default;
 }
+
+/* Button active/pressed state - inverted bevel */
 .btn95:active { box-shadow: inset 1px 1px 0 #000, inset -1px -1px 0 #fff, inset 2px 2px 0 #808080; }
 
-/* ---------- Taskbar ---------- */
+/* ========== TASKBAR ========== */
+/* The taskbar at the bottom of the screen with Start button, open windows, and clock */
+
+/* #taskbar - Main taskbar container at bottom of screen */
 #taskbar {
   position:absolute; left:0; right:0; bottom:0; height:36px;
   background:#c0c0c0;
@@ -147,26 +221,45 @@ body {
   gap:4px;
   z-index:99999;
 }
+
+/* #startbtn - The Start button on left side of taskbar */
 #startbtn {
   height:28px; display:flex; align-items:center; gap:5px; padding:0 8px;
   font-weight:bold; font-size:13px;
 }
+
+/* Start button icon/logo */
 #startbtn img { width:18px; height:18px; }
+
+/* #tb-sep - Separator line between Start button and task buttons */
 #tb-sep { width:2px; height:26px; box-shadow: inset -1px 0 0 #808080, inset 1px 0 0 #fff; }
+
+/* #tb-tasks - Container for open window task buttons */
 #tb-tasks { flex:1; display:flex; gap:3px; height:28px; overflow:hidden; }
+
+/* .taskbtn - Individual task button (one per open window) */
 .taskbtn {
   height:28px; min-width:120px; max-width:160px; display:flex; align-items:center; gap:4px;
   padding:0 6px; font-size:12px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
 }
+
+/* Active/focused task button - shows pressed state */
 .taskbtn.active { box-shadow: inset 1px 1px 0 #000, inset -1px -1px 0 #fff, inset 2px 2px 0 #808080; }
+
+/* Task button window icon */
 .taskbtn img { width:16px; height:16px; flex:0 0 16px; }
+
+/* #clock - Digital clock display on right side of taskbar */
 #clock {
   height:28px; display:flex; align-items:center; padding:0 8px;
   box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #fff;
   font-size:12px; min-width:64px; justify-content:center;
 }
 
-/* ---------- Start menu ---------- */
+/* ========== START MENU ========== */
+/* The popup Start menu that appears when Start button is clicked */
+
+/* #startmenu - Main Start menu container, initially hidden */
 #startmenu {
   position:absolute; left:2px; bottom:38px; width:230px;
   background:#c0c0c0;
@@ -174,30 +267,58 @@ body {
   display:none; z-index:100000;
   padding:3px;
 }
+
+/* Start menu visible state */
 #startmenu.open { display:flex; }
+
+/* .sm-strip - Vertical blue strip on left side with "start" text */
 .sm-strip {
   width:26px; background:linear-gradient(180deg,#000080,#1084d0);
   display:flex; align-items:flex-end; padding:6px 3px;
 }
+
+/* "start" text on vertical blue strip */
 .sm-strip span {
   writing-mode:vertical-rl; color:#fff; font-weight:bold; font-size:15px; letter-spacing:1px;
 }
+
+/* Container for menu items */
 .sm-items { flex:1; padding:2px; }
+
+/* Individual menu item (Programs, Documents, Settings, etc.) */
 .sm-item { display:flex; align-items:center; gap:8px; padding:5px 6px; font-size:12px; }
+
+/* Menu item icons */
 .sm-item img, .sm-item .fico { width:22px; height:22px; }
+
+/* Menu item hover effect - dark blue background */
 .sm-item:hover { background:#000080; color:#fff; }
+
+/* Menu divider line separating menu sections */
 .sm-divider { height:1px; background:#808080; box-shadow:0 1px 0 #fff; margin:3px 2px; }
 
-/* dialog / message boxes */
+/* ========== DIALOG / MESSAGE BOXES ========== */
+
+/* .msgbox-overlay - Semi-transparent overlay that covers screen behind dialog */
 .msgbox-overlay {
   position:absolute; inset:0; background:rgba(0,0,0,0); z-index:100001;
 }
+
+/* .msgbox - Dialog box container with window styling */
 .msgbox {
   position:absolute; width:280px; background:#c0c0c0;
   box-shadow: inset -1px -1px 0 #000, inset 1px 1px 0 #fff, inset -2px -2px 0 #808080, inset 2px 2px 0 #dfdfdf;
   padding:3px;
 }
+
+/* Dialog title bar (slightly shorter than regular windows) */
 .msgbox .titlebar { height:18px; }
+
+/* Dialog content area - text and icon layout */
 .msgbox-body { padding:16px; display:flex; gap:10px; align-items:flex-start; }
+
+/* Dialog message text */
 .msgbox-body .txt { flex:1; font-size:12px; padding-top:4px; }
+
+/* Dialog button container - centered button layout */
 .msgbox-buttons { display:flex; justify-content:center; padding:8px; }

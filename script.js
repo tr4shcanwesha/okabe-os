@@ -90,7 +90,7 @@ function openWindow(id, opts){
     <div class="titlebar">
       <img class="ticon" src="${svgUri(opts.icon)}">
       <div class="ttext">${opts.title}</div>
-      <div class="tbtn tb-min">_</div>
+      <div class="tbtn tb-min">-</div>
       <div class="tbtn tb-max">□</div>
       <div class="tbtn tb-close">×</div>
     </div>
