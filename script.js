@@ -568,7 +568,7 @@ addDesktopIcon('recyclebin', 'recycle_full', 'Recycle Bin', ()=>{
   );
 });
 
-addDesktopIcon('network', 'network', 'Network Neighborhood', ()=>{
+addDesktopIcon('network', 'network', 'Network', ()=>{
   openWindow('network', {
     title: 'Network Neighborhood',
     icon: 'network',
