@@ -4,21 +4,21 @@
    ============================================================ */
 const ICON_URLS = {
   computer: "https://win98icons.alexmeub.com/icons/png/computer_explorer_cool-0.png",
-  briefcase: "https://example.com/icons/briefcase.png",
+  briefcase: "https://win98icons.alexmeub.com/icons/png/briefcase-4.png",
   network: "https://example.com/icons/network.png",
   online: "https://example.com/icons/online.png",
-  recycle_empty: "https://example.com/icons/recycle-empty.png",
-  recycle_full: "https://example.com/icons/recycle-full.png",
+  recycle_empty: "https://win98icons.alexmeub.com/icons/png/recycle_bin_empty-4.png",
+  recycle_full: "https://win98icons.alexmeub.com/icons/png/recycle_bin_full-4.png",
   inbox: "https://example.com/icons/inbox.png",
-  internet: "https://example.com/icons/internet.png",
+  internet: "https://win98icons.alexmeub.com/icons/png/msie1-2.png",
   msn: "https://example.com/icons/msn.png",
-  folder: "https://example.com/icons/folder.png",
-  folder_open: "https://example.com/icons/folder-open.png",
+  folder: "https://win98icons.alexmeub.com/icons/png/directory_closed-4.png",
+  folder_open: "https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png",
   doc: "https://example.com/icons/doc.png",
   exe: "https://example.com/icons/exe.png",
   mail: "https://example.com/icons/mail.png",
   drive: "https://example.com/icons/drive.png",
-  disk: "https://example.com/icons/disk.png",
+  disk: "https://win98icons.alexmeub.com/icons/png/removable_disk_drive-2.png",
   cat: "https://example.com/icons/cat.png"
 };
 
