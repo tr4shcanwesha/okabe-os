@@ -625,7 +625,7 @@ addDesktopIcon('inbox', 'inbox', 'Inbox', ()=>{
   );
 });
 
-addDesktopIcon('internet', 'internet', 'The Internet', ()=>{
+addDesktopIcon('internet', 'internet', 'Internet', ()=>{
   openWindow('internet', {
     title: 'Microsoft Internet Explorer',
     icon: 'internet',
