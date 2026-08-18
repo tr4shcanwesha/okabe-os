@@ -1,0 +1,203 @@
+* { box-sizing: border-box; }
+html,body {
+  margin:0; padding:0; height:100%; width:100%; overflow:hidden;
+  font-family: Tahoma, "Segoe UI", Arial, sans-serif;
+  font-size:12px;
+  -webkit-font-smoothing:none;
+}
+body {
+  background:#008080;
+  background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0 2px, transparent 2px 4px);
+  position:relative;
+  cursor:default;
+  user-select:none;
+}
+
+/* ---------- 3D bevel helpers ---------- */
+.raised {
+  box-shadow:
+    inset -1px -1px 0 #000000,
+    inset 1px 1px 0 #ffffff,
+    inset -2px -2px 0 #808080,
+    inset 2px 2px 0 #dfdfdf;
+  background:#c0c0c0;
+}
+.sunken {
+  box-shadow:
+    inset 1px 1px 0 #000000,
+    inset -1px -1px 0 #ffffff,
+    inset 2px 2px 0 #808080,
+    inset -2px -2px 0 #dfdfdf;
+  background:#c0c0c0;
+}
+.field-sunken {
+  box-shadow:
+    inset 1px 1px 0 #000000,
+    inset -1px -1px 0 #ffffff,
+    inset 2px 2px 0 #808080;
+  background:#ffffff;
+}
+
+/* ---------- Desktop icons ---------- */
+#desktop {
+  position:absolute; top:0; left:0; right:0; bottom:36px;
+  padding:10px;
+  display:flex; flex-direction:column; flex-wrap:wrap; align-content:flex-start;
+  gap:2px;
+}
+.icon {
+  width:74px; height:74px;
+  display:flex; flex-direction:column; align-items:center;
+  padding:4px;
+  margin-bottom:6px;
+  border:1px dotted transparent;
+}
+.icon .glyph { width:32px; height:32px; margin-bottom:4px; }
+.icon .label {
+  color:#fff; text-shadow:1px 1px 1px #000;
+  text-align:center; line-height:1.15; font-size:11px;
+  padding:1px 2px;
+  max-width:72px;
+  word-wrap:break-word;
+}
+.icon.selected .label { background:#000080; color:#fff; text-shadow:none; }
+.icon.selected { border:1px dotted #fff; }
+
+/* ---------- Windows ---------- */
+.win {
+  position:absolute;
+  min-width:220px; min-height:150px;
+  background:#c0c0c0;
+  box-shadow:
+    inset -1px -1px 0 #000000,
+    inset 1px 1px 0 #ffffff,
+    inset -2px -2px 0 #808080,
+    inset 2px 2px 0 #dfdfdf;
+  display:flex; flex-direction:column;
+  padding:3px;
+}
+.win.inactive .titlebar { background:#808080; }
+.titlebar {
+  height:20px; flex:0 0 20px;
+  background:linear-gradient(90deg,#000080,#1084d0);
+  display:flex; align-items:center;
+  padding:0 3px;
+  cursor:default;
+  color:#fff; font-weight:bold; font-size:12px;
+  user-select:none;
+}
+.titlebar .ttext { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; padding-left:2px; display:flex; align-items:center; gap:4px;}
+.titlebar .ticon { width:14px; height:14px; flex:0 0 14px; }
+.tbtn {
+  width:16px; height:14px; margin-left:2px;
+  background:#c0c0c0;
+  box-shadow: inset -1px -1px 0 #000, inset 1px 1px 0 #fff, inset -2px -2px 0 #808080, inset 2px 2px 0 #dfdfdf;
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:bold; color:#000;
+  line-height:1;
+  cursor:default;
+}
+.tbtn:active {
+  box-shadow: inset 1px 1px 0 #000, inset -1px -1px 0 #fff, inset 2px 2px 0 #808080;
+}
+.menubar {
+  display:flex; gap:10px; background:#c0c0c0; padding:2px 6px; font-size:12px; flex:0 0 auto;
+  border-bottom:1px solid #808080;
+}
+.menubar span { padding:1px 4px; }
+.menubar span:hover { background:#000080; color:#fff; }
+.win-body {
+  flex:1; overflow:auto; background:#c0c0c0; padding:8px;
+  box-shadow: inset 1px 1px 0 #808080;
+}
+.win-body.white { background:#fff; box-shadow:none; margin:2px; }
+.win-statusbar {
+  flex:0 0 20px; display:flex; align-items:center; gap:8px; padding:0 4px;
+  font-size:11px;
+}
+.status-pane { flex:1; padding:1px 6px;
+  box-shadow: inset -1px -1px 0 #ffffff, inset 1px 1px 0 #808080; }
+
+.resize-handle {
+  position:absolute; right:0; bottom:0; width:14px; height:14px; cursor:nwse-resize;
+}
+
+/* file list rows */
+.file-row { display:flex; align-items:center; gap:6px; padding:3px 2px; }
+.file-row:hover { background:#000080; color:#fff; }
+.file-row img, .file-row .fico { width:20px; height:20px; }
+.doc-view h3 { margin-top:0; }
+.doc-view pre { white-space:pre-wrap; font-family: "Courier New", monospace; font-size:12px; }
+.backbtn { margin-bottom:6px; }
+
+/* Buttons generic */
+.btn95 {
+  background:#c0c0c0; border:none; padding:3px 10px; font-family:inherit; font-size:12px;
+  box-shadow: inset -1px -1px 0 #000, inset 1px 1px 0 #fff, inset -2px -2px 0 #808080, inset 2px 2px 0 #dfdfdf;
+  cursor:default;
+}
+.btn95:active { box-shadow: inset 1px 1px 0 #000, inset -1px -1px 0 #fff, inset 2px 2px 0 #808080; }
+
+/* ---------- Taskbar ---------- */
+#taskbar {
+  position:absolute; left:0; right:0; bottom:0; height:36px;
+  background:#c0c0c0;
+  box-shadow: inset 0 1px 0 #dfdfdf, 0 -1px 0 #000;
+  display:flex; align-items:center; padding:3px 4px;
+  gap:4px;
+  z-index:99999;
+}
+#startbtn {
+  height:28px; display:flex; align-items:center; gap:5px; padding:0 8px;
+  font-weight:bold; font-size:13px;
+}
+#startbtn img { width:18px; height:18px; }
+#tb-sep { width:2px; height:26px; box-shadow: inset -1px 0 0 #808080, inset 1px 0 0 #fff; }
+#tb-tasks { flex:1; display:flex; gap:3px; height:28px; overflow:hidden; }
+.taskbtn {
+  height:28px; min-width:120px; max-width:160px; display:flex; align-items:center; gap:4px;
+  padding:0 6px; font-size:12px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+}
+.taskbtn.active { box-shadow: inset 1px 1px 0 #000, inset -1px -1px 0 #fff, inset 2px 2px 0 #808080; }
+.taskbtn img { width:16px; height:16px; flex:0 0 16px; }
+#clock {
+  height:28px; display:flex; align-items:center; padding:0 8px;
+  box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #fff;
+  font-size:12px; min-width:64px; justify-content:center;
+}
+
+/* ---------- Start menu ---------- */
+#startmenu {
+  position:absolute; left:2px; bottom:38px; width:230px;
+  background:#c0c0c0;
+  box-shadow: inset -1px -1px 0 #000, inset 1px 1px 0 #fff, inset -2px -2px 0 #808080, inset 2px 2px 0 #dfdfdf;
+  display:none; z-index:100000;
+  padding:3px;
+}
+#startmenu.open { display:flex; }
+.sm-strip {
+  width:26px; background:linear-gradient(180deg,#000080,#1084d0);
+  display:flex; align-items:flex-end; padding:6px 3px;
+}
+.sm-strip span {
+  writing-mode:vertical-rl; color:#fff; font-weight:bold; font-size:15px; letter-spacing:1px;
+}
+.sm-items { flex:1; padding:2px; }
+.sm-item { display:flex; align-items:center; gap:8px; padding:5px 6px; font-size:12px; }
+.sm-item img, .sm-item .fico { width:22px; height:22px; }
+.sm-item:hover { background:#000080; color:#fff; }
+.sm-divider { height:1px; background:#808080; box-shadow:0 1px 0 #fff; margin:3px 2px; }
+
+/* dialog / message boxes */
+.msgbox-overlay {
+  position:absolute; inset:0; background:rgba(0,0,0,0); z-index:100001;
+}
+.msgbox {
+  position:absolute; width:280px; background:#c0c0c0;
+  box-shadow: inset -1px -1px 0 #000, inset 1px 1px 0 #fff, inset -2px -2px 0 #808080, inset 2px 2px 0 #dfdfdf;
+  padding:3px;
+}
+.msgbox .titlebar { height:18px; }
+.msgbox-body { padding:16px; display:flex; gap:10px; align-items:flex-start; }
+.msgbox-body .txt { flex:1; font-size:12px; padding-top:4px; }
+.msgbox-buttons { display:flex; justify-content:center; padding:8px; }
