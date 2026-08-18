@@ -1,8 +1,7 @@
 /* ============================================================
    START.EXE DESKTOP ICON  ->  WORDLE
-   This file is self-contained: it relies on the core OS globals
-   (addDesktopIcon, openWindow, openWindows, showMessageBox, svgUri)
-   loaded by /script.js, and registers itself on load.
+   This file relies on the core OS globals loaded by /script.js:
+   addDesktopIcon, openWindow, openWindows, showMessageBox, ICON_URLS
    ============================================================ */
 addDesktopIcon('startexe','exe','Wordle', ()=>openWordle());
 
@@ -166,7 +165,7 @@ function submitWordleGuess(){
   } else if(wState.row>=6){
     wState.done = true;
     setWMsg('Out of guesses.');
-    setTimeout(()=>showWFailBox(), 200);
+    setTimeout(()=>showFailBox(), 200);
   } else {
     setWMsg('');
   }
@@ -186,22 +185,40 @@ function resetWordleGame(){
   renderWordleKeyboard();
 }
 
-function showWFailBox(){
+function showFailBox(){
   const overlay = document.createElement('div');
   overlay.className = 'msgbox-overlay';
+
   const box = document.createElement('div');
   box.className = 'msgbox';
-  box.style.left = '50%'; box.style.top='38%'; box.style.transform='translate(-50%,-50%)';
+  box.style.left = '50%';
+  box.style.top = '38%';
+  box.style.transform = 'translate(-50%,-50%)';
+
   box.innerHTML = `
-    <div class="titlebar"><div class="ttext">WORDLE.EXE</div><div class="tbtn mb-close">×</div></div>
-    <div class="msgbox-body"><img src="${svgUri('exe')}" width="32" height="32"><div class="txt">you cant be serious </3</div></div>
-    <div class="msgbox-buttons"><button class="btn95 mb-mybad">my bad</button></div>
+    <div class="titlebar">
+      <div class="ttext">WORDLE.EXE</div>
+      <div class="tbtn mb-close">×</div>
+    </div>
+    <div class="msgbox-body">
+      <img src="${ICON_URLS.exe}" width="32" height="32">
+      <div class="txt">You can't be serious.</div>
+    </div>
+    <div class="msgbox-buttons">
+      <button class="btn95 mb-mybad">My bad</button>
+    </div>
   `;
+
   overlay.appendChild(box);
   document.body.appendChild(overlay);
+
   const close = ()=>overlay.remove();
   box.querySelector('.mb-close').onclick = close;
   box.querySelector('.mb-mybad').onclick = ()=>{ close(); resetWordleGame(); };
+}
+
+function showWFailBox(){
+  showFailBox();
 }
 
 document.addEventListener('keydown', (e)=>{
