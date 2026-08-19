@@ -2,7 +2,7 @@
   <img width="1913" height="1023" alt="image" src="https://github.com/user-attachments/assets/b6f3a1ec-32da-48b0-b82b-93ff1eec940d" />
 </p>
 
-<h1>OBAKE-OS</h1>
+<h1>OKABE-OS</h1>
 
 <p>
   An interactive retro-style operating system built for the GDG Tech Hunt.
@@ -12,7 +12,7 @@
 
 ## Development
 
-OBAKE-OS is currently under active development. The project is built with vanilla HTML, CSS and JavaScript.
+OKABE-OS is currently under active development. The project is built with vanilla HTML, CSS and JavaScript.
 
 > [!IMPORTANT]
 > **Do not commit or push changes directly to `main`.**
@@ -32,7 +32,7 @@ OBAKE-OS is currently under active development. The project is built with vanill
 ## Project Structure
 
 ```text
-obake-os/
+okabe-os/
 │
 ├── index.html
 ├── script.js              # Core OS functionality
@@ -119,7 +119,7 @@ Open `index.html` directly, or use VS Code with Live Server.
 
 ## Live
 
-[https://obake-os.vercel.app/](https://obake-os.vercel.app/)
+[https://okabe-os.vercel.app/](https://okabe-os.vercel.app/)
 
 ---
 

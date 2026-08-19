@@ -295,14 +295,14 @@ document.getElementById('desktop').addEventListener('click', ()=>{
 });
 
 /* ============================================================
-   CONTENT: FILE SYSTEM FOR RINTARO OBAKE
+   CONTENT: FILE SYSTEM FOR RINTARO OKABE
    ============================================================ */
 const DOCS = {
   lab: [
     {
       name: 'lab_notes.txt',
       body:
-`ENTRY #217 — OBAKE LABORATORY, SUB-BASEMENT
+`ENTRY #217 — OKABE LABORATORY, SUB-BASEMENT
 
 The barometric sensor spiked at 3:14 AM again. Three
 nights in a row now, always 3:14. Working theory #1: a
@@ -345,7 +345,7 @@ Board about this.`
     {
       name: 'grant_proposal_REJECTED.doc',
       body:
-`RE: Application for Continued Funding — Obake Laboratory
+`RE: Application for Continued Funding — Okabe Laboratory
 
 Summary of prior year's findings: three patents,
 one minor electrical fire, and a working prototype
@@ -503,9 +503,9 @@ addDesktopIcon('mycomputer', 'computer', 'My Computer', ()=>{
       </div>
 
       <div class="file-row"
-           onclick="showMessageBox('Obake Laboratory (D:)','Network drive. Contains everything the Board pretends not to have read.','drive')">
+           onclick="showMessageBox('Okabe Laboratory (D:)','Network drive. Contains everything the Board pretends not to have read.','drive')">
         <img class="fico" src="${ICON_URLS['drive']}">
-        <span>Obake Laboratory (D:)</span>
+        <span>Okabe Laboratory (D:)</span>
       </div>
 
       <div class="file-row"
@@ -520,7 +520,7 @@ addDesktopIcon('mycomputer', 'computer', 'My Computer', ()=>{
 addDesktopIcon('myfiles', 'folder', 'My Files', ()=>{
   docListWindow(
     'myfiles',
-    "R. Obake's Files",
+    "R. Okabe's Files",
     'folder_open',
     DOCS.lab.concat(DOCS.personal),
     (DOCS.lab.length + DOCS.personal.length) + ' object(s)'
@@ -578,9 +578,9 @@ addDesktopIcon('network', 'network', 'Network', ()=>{
 
     bodyHTML: `
       <div class="file-row"
-           onclick="showMessageBox('OBAKE-LAB-01','This computer. You are already here.','computer')">
+           onclick="showMessageBox('OKABE-LAB-01','This computer. You are already here.','computer')">
         <img class="fico" src="${ICON_URLS['computer']}">
-        <span>OBAKE-LAB-01</span>
+        <span>OKABE-LAB-01</span>
       </div>
 
       <div class="file-row"
@@ -650,9 +650,9 @@ addDesktopIcon('internet', 'internet', 'Internet', ()=>{
   });
 });
 
-addDesktopIcon('msn', 'msn', 'The Obake Network', ()=>{
+addDesktopIcon('msn', 'msn', 'The Okabe Network', ()=>{
   showMessageBox(
-    'The Obake Network',
+    'The Okabe Network',
     'You are now signed in. 0 buddies online. This has been true for a while.',
     'msn'
   );
@@ -665,7 +665,7 @@ const startMenu = document.getElementById('startmenu');
 
 startMenu.innerHTML = `
   <div class="sm-strip">
-    <span>OBAKE-OS 95</span>
+    <span>OKABE-OS 95</span>
   </div>
 
   <div class="sm-items">
@@ -734,7 +734,7 @@ document.addEventListener('click', (e)=>{
 window.__openMyFiles = ()=>{
   docListWindow(
     'myfiles',
-    "R. Obake's Files",
+    "R. Okabe's Files",
     'folder_open',
     DOCS.lab.concat(DOCS.personal),
     (DOCS.lab.length + DOCS.personal.length) + ' object(s)'
@@ -775,8 +775,8 @@ setInterval(updateClock, 1000);
 /* Open "My Files" by default so the desk feels lived-in */
 setTimeout(()=>{
   showMessageBox(
-    'OBAKE-OS 95',
-    'Welcome back, Dr. Obake.\n\n(1) new message in Inbox.',
+    'OKABE-OS 95',
+    'Welcome back, Dr. Okabe.\n\n(1) new message in Inbox.',
     'computer'
   );
 }, 400);
