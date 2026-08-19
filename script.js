@@ -14,12 +14,12 @@ const ICON_URLS = {
   msn: "https://win98icons.alexmeub.com/icons/png/msagent-4.png",
   folder: "https://win98icons.alexmeub.com/icons/png/directory_closed-4.png",
   folder_open: "https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png",
-  doc: "https://example.com/icons/doc.png",
+  doc: "https://win98icons.alexmeub.com/icons/png/address_book_pad.png",
   exe: "https://win98icons.alexmeub.com/icons/png/help_question_mark-0.png",
-  mail: "https://example.com/icons/mail.png",
-  drive: "https://example.com/icons/drive.png",
+  mail: "https://win98icons.alexmeub.com/icons/png/directory_explorer-5.png",
+  drive: "https://win98icons.alexmeub.com/icons/png/standby_monitor_moon-3.png",
   disk: "https://win98icons.alexmeub.com/icons/png/removable_disk_drive-2.png",
-  cat: "https://example.com/icons/cat.png"
+  cat: "https://win98icons.alexmeub.com/icons/png/console_prompt-0.png"
 };
 
 /* ============================================================
