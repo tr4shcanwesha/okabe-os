@@ -20,6 +20,81 @@ body {
   user-select:none;
 }
 
+#fullscreen-penalty {
+  position:fixed; inset:0; z-index:2147483646;
+  display:flex; align-items:center; justify-content:center;
+  background:#000; color:#aaa; cursor:wait;
+  font-family:"Courier New", monospace;
+  overflow:hidden;
+}
+
+#fullscreen-penalty::before {
+  content:"";
+  position:absolute; inset:-5px 0;
+  pointer-events:none;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.07) 0,
+    rgba(255,255,255,.07) 1px,
+    rgba(0,0,0,.18) 2px,
+    rgba(0,0,0,.18) 4px
+  );
+  animation:penalty-scanlines .18s linear infinite;
+}
+
+#fullscreen-penalty::after {
+  content:"";
+  position:absolute; inset:0;
+  pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 48%, rgba(0,0,0,.7) 100%);
+  animation:penalty-flicker .12s steps(2) infinite;
+}
+
+.fullscreen-dialog {
+  position:relative;
+  z-index:1;
+  width:min(390px, calc(100vw - 24px));
+  background:#c0c0c0; padding:3px;
+  color:#000;
+  font-family:Tahoma, "Segoe UI", Arial, sans-serif;
+}
+
+.fullscreen-body {
+  display:flex; align-items:center; gap:12px;
+  padding:22px 16px 18px; font-size:13px; line-height:1.35;
+}
+
+.fullscreen-freeze-body { padding-bottom:12px; }
+
+.fullscreen-icon {
+  width:32px; height:32px; flex:0 0 32px;
+  display:flex; align-items:center; justify-content:center;
+  background:#000080; color:#fff; font:bold 24px "Times New Roman", serif;
+}
+
+.fullscreen-remaining { display:block; margin-top:8px; }
+
+.fullscreen-meter {
+  height:14px; margin:0 12px 12px; padding:2px;
+  background:#fff; box-shadow:inset 1px 1px 0 #808080;
+}
+
+.fullscreen-meter div { height:100%; width:100%; background:#000080; }
+
+.fullscreen-actions {
+  display:flex; justify-content:flex-end; padding:0 8px 8px;
+}
+
+@keyframes penalty-scanlines {
+  from { transform:translateY(0); }
+  to { transform:translateY(4px); }
+}
+
+@keyframes penalty-flicker {
+  0%, 100% { opacity:1; }
+  50% { opacity:.92; }
+}
+
 /* ========== 3D BEVEL EFFECTS ========== */
 /* These classes create the classic beveled/embossed look of Windows 95 */
 
