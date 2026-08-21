@@ -1,5 +1,3 @@
-// OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-
 // DO NOT TRY TO DECLUTTER THIS FILE. I TRIED AND IT WAS BAD.
 
 // OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
@@ -487,6 +485,11 @@ addDesktopIcon('msn', 'msn', 'The Okabe Network', ()=>{
    CLOCK
    ============================================================ */
 function updateClock(){
+  if(window.__fullscreenPenaltyDisplay){
+    document.getElementById('clock').textContent = window.__fullscreenPenaltyDisplay;
+    return;
+  }
+
   const now = new Date();
 
   let h = now.getHours();
