@@ -420,10 +420,10 @@ const imageFileTypes = ['image/png', 'image/jpeg'];
 
 const IMAGE_FILES = [
   {
-    name: 'workstation-okabe.png',
+    name: 'evidence.png (LOCKED)',
     type: 'image',
     mimeType: 'image/png',
-    src: 'images/workstation-okabe.png'
+    src: 'images/evidence.png'
   }
 ];
 
