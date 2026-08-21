@@ -1,0 +1,218 @@
+#retro-boot {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+
+  background: #000;
+  color: #aaa;
+
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+
+  overflow: hidden;
+
+  opacity: 1;
+  transition:
+    opacity 1.2s steps(10),
+    transform 1.4s ease-out,
+    filter 1.2s steps(8);
+
+  transform: scale(1);
+}
+
+#retro-boot.boot-exit {
+  opacity: 0;
+  transform: scale(1.025);
+  filter: brightness(1.2);
+  pointer-events: none;
+}
+
+/* CRT scanlines */
+#retro-boot::before {
+  content: "";
+  position: absolute;
+  inset: -5px 0;
+
+  z-index: 50;
+  pointer-events: none;
+
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.035) 0px,
+    rgba(255,255,255,.035) 1px,
+    rgba(0,0,0,.12) 2px,
+    rgba(0,0,0,.12) 4px
+  );
+
+  animation: scanlines .18s linear infinite;
+}
+
+/* CRT vignette */
+#retro-boot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  z-index: 51;
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      transparent 60%,
+      rgba(0,0,0,.42) 100%
+    );
+}
+
+#boot-screen {
+  position: absolute;
+  inset: 0;
+
+  padding: 28px 34px;
+  box-sizing: border-box;
+
+  animation: crtText .18s linear infinite;
+}
+
+#boot-output {
+  max-width: 950px;
+}
+
+.dim {
+  color: #777;
+}
+
+.bright {
+  color: #ddd;
+}
+
+.warn {
+  color: #aaa;
+}
+
+.error {
+  color: #aaa;
+
+  animation: tinyGlitch .1s steps(2) 2;
+}
+
+#boot-prompt {
+  margin-top: 4px;
+}
+
+#boot-prompt strong {
+  color: #fff;
+}
+
+#boot-cursor,
+#prompt-cursor {
+  display: inline-block;
+
+  width: 8px;
+  height: 14px;
+
+  margin-left: 2px;
+  vertical-align: -2px;
+
+  background: #aaa;
+
+  animation: blink .65s steps(2) infinite;
+}
+
+/* Win98-inspired loading bar */
+#windows-loader {
+  width: 100%;
+  max-width: 520px;
+
+  height: 12px;
+
+  margin-top: 8px;
+
+  background: #080808;
+
+  border: 1px solid #555;
+
+  overflow: hidden;
+}
+
+#windows-loader-bar {
+  width: 70px;
+  height: 100%;
+
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #777 42%,
+    #ddd 50%,
+    #777 58%,
+    transparent 100%
+  );
+
+  animation:
+    windowsLoading 1.8s steps(16) infinite;
+}
+
+/* CRT movement */
+@keyframes scanlines {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(4px);
+  }
+}
+
+@keyframes crtText {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(.5px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink {
+  0%, 45% {
+    opacity: 1;
+  }
+
+  46%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes tinyGlitch {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(1px);
+  }
+
+  100% {
+    transform: translateX(-1px);
+  }
+}
+
+/*
+ * Inspired by the discrete stepped loading
+ * animation used by the reference project.
+ */
+@keyframes windowsLoading {
+  0% {
+    transform: translateX(-90px);
+  }
+
+  100% {
+    transform: translateX(520px);
+  }
+}
