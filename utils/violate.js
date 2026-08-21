@@ -143,7 +143,7 @@
     if(penaltyOverlay) return;
 
     const violationNumber = Number(localStorage.getItem(violationKey) || 0) + 1;
-    const duration = violationNumber === 1 ? 60 * 1000 : 10 * 60 * 1000;
+    const duration = violationNumber === 1 ? 5 * 1000 : 10 * 1000; // 10 seconds for testing, 10 minutes in production
     const endsAt = Date.now() + duration;
 
     localStorage.setItem(violationKey, String(violationNumber));

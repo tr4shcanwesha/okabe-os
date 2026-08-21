@@ -404,5 +404,8 @@ body {
 /* Dialog message text */
 .msgbox-body .txt { flex:1; font-size:12px; padding-top:4px; }
 
+.evidence-password { display:block; margin-top:6px; }
+.evidence-error { text-align:center; }
+
 /* Dialog button container - centered button layout */
 .msgbox-buttons { display:flex; justify-content:center; padding:8px; gap: 12px;}

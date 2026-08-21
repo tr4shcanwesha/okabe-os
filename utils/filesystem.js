@@ -125,12 +125,22 @@ const IMAGE_FILES = [
   }
 ];
 
+const EVIDENCE_UNLOCK_KEY = 'okabe.evidence.unlocked';
+
+if(localStorage.getItem(EVIDENCE_UNLOCK_KEY) === 'true'){
+  IMAGE_FILES[0].name = 'evidence.png (UNLOCKED)';
+}
+
 function isImageFile(file){
   return file.type === 'image' || imageFileTypes.includes(file.mimeType);
 }
 
 function fileIcon(file){
   return isImageFile(file) ? (file.mimeType === 'image/png' ? ICON_URLS['cat'] : ICON_URLS['doc']) : ICON_URLS['doc'];
+}
+
+function isEvidenceFile(file){
+  return file.src === 'images/evidence.png';
 }
 
 function docListWindow(winId, title, iconKey, docs, statusText){
@@ -156,8 +166,70 @@ function docListWindow(winId, title, iconKey, docs, statusText){
 
 function openFile(winId, idx){
   const file = window['__docs_' + winId][idx];
-  if(isImageFile(file)) openImage(winId, file);
+  if(isEvidenceFile(file) && localStorage.getItem(EVIDENCE_UNLOCK_KEY) !== 'true'){
+    requestEvidencePassword(winId, file);
+  } else if(isImageFile(file)) openImage(winId, file);
   else openDoc(winId, idx);
+}
+
+function requestEvidencePassword(winId, file){
+  const overlay = document.createElement('div');
+  overlay.className = 'msgbox-overlay';
+
+  const box = document.createElement('div');
+  box.className = 'msgbox';
+  box.style.left = '50%';
+  box.style.top = '38%';
+  box.style.transform = 'translate(-50%,-50%)';
+  box.innerHTML = `
+    <div class="titlebar">
+      <div class="ttext">Password Required</div>
+      <div class="tbtn mb-close">×</div>
+    </div>
+
+    <form class="msgbox-body">
+      <img src="${ICON_URLS['cat']}" width="32" height="32" alt="">
+      <div class="txt">
+        <div>Enter the password to open:</div>
+        <input class="evidence-password" type="password" maxlength="10" autocomplete="off" autofocus>
+      </div>
+    </form>
+
+    <div class="evidence-error"></div>
+
+    <div class="msgbox-buttons">
+      <button class="btn95 mb-ok" type="submit">Open</button>
+      <button class="btn95 mb-cancel" type="button">Cancel</button>
+    </div>
+  `;
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  const close = ()=>overlay.remove();
+  const form = box.querySelector('form');
+  const password = box.querySelector('.evidence-password');
+  const error = box.querySelector('.evidence-error');
+
+  box.querySelector('.mb-close').onclick = close;
+  box.querySelector('.mb-cancel').onclick = close;
+  box.querySelector('.mb-ok').onclick = ()=>form.requestSubmit();
+  form.onsubmit = (event)=>{
+    event.preventDefault();
+
+    if(password.value !== 'SPLIT314'){
+      error.textContent = 'Incorrect password.';
+      password.select();
+      return;
+    }
+
+    localStorage.setItem(EVIDENCE_UNLOCK_KEY, 'true');
+    file.name = 'evidence.png (UNLOCKED)';
+    close();
+    openImage(winId, file);
+  };
+
+  password.focus();
 }
 
 function openDoc(winId, idx){
