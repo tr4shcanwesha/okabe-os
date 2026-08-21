@@ -18,6 +18,11 @@
 
     boot.innerHTML = `
       <div id="boot-screen">
+        <img
+          class="boot-star"
+          src="images/boot-star.png"
+          alt="Energy Star"
+        >
         <div id="boot-output"></div>
         <span id="boot-cursor"></span>
       </div>
