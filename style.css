@@ -197,6 +197,15 @@ body {
 /* Back button styling */
 .backbtn { margin-bottom:6px; }
 
+/* Image viewer controls and canvas */
+.image-view { display:flex; flex-direction:column; height:100%; gap:6px; }
+.image-toolbar { display:flex; align-items:center; gap:4px; flex:0 0 auto; }
+.image-toolbar .btn95 { min-width:28px; padding-left:6px; padding-right:6px; }
+.image-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-left:4px; }
+.image-canvas { flex:1; min-height:120px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#808080; padding:12px; cursor:grab; touch-action:none; }
+.image-canvas.is-dragging { cursor:grabbing; }
+.image-preview { display:block; max-width:100%; max-height:100%; object-fit:contain; transform-origin:center center; user-select:none; pointer-events:none; }
+
 /* ========== BUTTONS ========== */
 
 /* .btn95 - Generic Windows 95 style button */

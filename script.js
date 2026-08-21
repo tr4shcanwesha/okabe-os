@@ -19,7 +19,7 @@ const ICON_URLS = {
   mail: "https://win98icons.alexmeub.com/icons/png/directory_explorer-5.png",
   drive: "https://win98icons.alexmeub.com/icons/png/standby_monitor_moon-3.png",
   disk: "https://win98icons.alexmeub.com/icons/png/removable_disk_drive-2.png",
-  cat: "https://win98icons.alexmeub.com/icons/png/console_prompt-0.png"
+  cat: "https://win98icons.alexmeub.com/icons/png/kodak_imaging_file-0.png"
 };
 
 /* ============================================================
@@ -358,7 +358,7 @@ times.
 
 Request: More funding. Less supervision. A new
 mini-fridge.`
-    }
+    },
   ],
 
   personal: [
@@ -405,14 +405,34 @@ even the work. I think I am just bad at endings.]
 - 9V batteries, many
 - one (1) new fridge, quietly, before it becomes
   a load-bearing part of the experiment log`
-    }
+    },
+
   ]
 };
 
+const imageFileTypes = ['image/png', 'image/jpeg'];
+
+const IMAGE_FILES = [
+  {
+    name: 'workstation-okabe.png',
+    type: 'image',
+    mimeType: 'image/png',
+    src: 'images/workstation-okabe.png'
+  }
+];
+
+function isImageFile(file){
+  return file.type === 'image' || imageFileTypes.includes(file.mimeType);
+}
+
+function fileIcon(file){
+  return isImageFile(file) ? (file.mimeType === 'image/png' ? ICON_URLS['cat'] : ICON_URLS['doc']) : ICON_URLS['doc'];
+}
+
 function docListWindow(winId, title, iconKey, docs, statusText){
   const rows = docs.map((d,i)=>
-    `<div class="file-row" onclick="openDoc('${winId}',${i})">
-      <img class="fico" src="${ICON_URLS['doc']}">
+    `<div class="file-row" ondblclick="openFile('${winId}',${i})">
+      <img class="fico" src="${fileIcon(d)}" alt="">
       <span>${d.name}</span>
     </div>`
   ).join('');
@@ -428,6 +448,12 @@ function docListWindow(winId, title, iconKey, docs, statusText){
   });
 
   window['__docs_' + winId] = docs;
+}
+
+function openFile(winId, idx){
+  const file = window['__docs_' + winId][idx];
+  if(isImageFile(file)) openImage(winId, file);
+  else openDoc(winId, idx);
 }
 
 function openDoc(winId, idx){
@@ -459,6 +485,117 @@ function openDoc(winId, idx){
     <h3>${doc.name}</h3>
     <pre>${doc.body}</pre>
   `;
+}
+
+function openImage(winId, image){
+  const w = openWindows[winId].el;
+  const listEl = document.getElementById(winId + '-list');
+  if(listEl) listEl.style.display = 'none';
+
+  let viewer = w.querySelector('.image-view');
+  if(!viewer){
+    viewer = document.createElement('div');
+    viewer.className = 'image-view';
+    w.querySelector('.win-body').appendChild(viewer);
+  }
+
+  viewer.style.display = 'flex';
+  viewer.innerHTML = `
+    <div class="image-toolbar">
+      <button class="btn95" type="button" onclick="closeImage('${winId}')">&laquo; Back</button>
+      <button class="btn95" type="button" onclick="zoomImage('${winId}', -0.1)">-</button>
+      <button class="btn95" type="button" onclick="fitImage('${winId}')">Fit</button>
+      <button class="btn95" type="button" onclick="zoomImage('${winId}', 0.1)">+</button>
+      <span class="image-name">${image.name}</span>
+    </div>
+    <div class="image-canvas sunken">
+      <img class="image-preview" src="${image.src}" alt="${image.name}">
+    </div>
+  `;
+
+  viewer.dataset.zoom = '1';
+  viewer.dataset.panX = '0';
+  viewer.dataset.panY = '0';
+
+  const canvas = viewer.querySelector('.image-canvas');
+  const preview = viewer.querySelector('.image-preview');
+  let dragging = false;
+  let startX = 0;
+  let startY = 0;
+  let startPanX = 0;
+  let startPanY = 0;
+
+  canvas.addEventListener('pointerdown', (event)=>{
+    dragging = true;
+    startX = event.clientX;
+    startY = event.clientY;
+    startPanX = Number(viewer.dataset.panX || 0);
+    startPanY = Number(viewer.dataset.panY || 0);
+    canvas.setPointerCapture(event.pointerId);
+    canvas.classList.add('is-dragging');
+    event.preventDefault();
+    event.stopPropagation();
+  });
+
+  canvas.addEventListener('pointermove', (event)=>{
+    if(!dragging) return;
+    viewer.dataset.panX = (startPanX + event.clientX - startX).toString();
+    viewer.dataset.panY = (startPanY + event.clientY - startY).toString();
+    updateImagePosition(viewer, preview);
+  });
+
+  const stopDragging = (event)=>{
+    if(!dragging) return;
+    dragging = false;
+    canvas.releasePointerCapture(event.pointerId);
+    canvas.classList.remove('is-dragging');
+  };
+
+  canvas.addEventListener('pointerup', stopDragging);
+  canvas.addEventListener('pointercancel', stopDragging);
+}
+
+function updateImagePosition(viewer, image){
+  const zoom = Number(viewer.dataset.zoom || 1);
+  const canvas = viewer.querySelector('.image-canvas');
+  const canvasStyle = getComputedStyle(canvas);
+  const canvasWidth = canvas.clientWidth - parseFloat(canvasStyle.paddingLeft) - parseFloat(canvasStyle.paddingRight);
+  const canvasHeight = canvas.clientHeight - parseFloat(canvasStyle.paddingTop) - parseFloat(canvasStyle.paddingBottom);
+  const maxPanX = Math.abs(canvasWidth - image.offsetWidth * zoom) / 2;
+  const maxPanY = Math.abs(canvasHeight - image.offsetHeight * zoom) / 2;
+  const panX = Math.max(-maxPanX, Math.min(maxPanX, Number(viewer.dataset.panX || 0)));
+  const panY = Math.max(-maxPanY, Math.min(maxPanY, Number(viewer.dataset.panY || 0)));
+  viewer.dataset.panX = panX.toString();
+  viewer.dataset.panY = panY.toString();
+  image.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
+}
+
+function zoomImage(winId, change){
+  const viewer = openWindows[winId]?.el.querySelector('.image-view');
+  const image = viewer?.querySelector('.image-preview');
+  if(!viewer || !image) return;
+
+  const zoom = Math.min(4, Math.max(0.2, Number(viewer.dataset.zoom || 1) + change));
+  viewer.dataset.zoom = zoom.toString();
+  updateImagePosition(viewer, image);
+}
+
+function fitImage(winId){
+  const viewer = openWindows[winId]?.el.querySelector('.image-view');
+  const image = viewer?.querySelector('.image-preview');
+  if(!viewer || !image) return;
+  viewer.dataset.zoom = '1';
+  viewer.dataset.panX = '0';
+  viewer.dataset.panY = '0';
+  updateImagePosition(viewer, image);
+}
+
+function closeImage(winId){
+  const w = openWindows[winId].el;
+  const viewer = w.querySelector('.image-view');
+  if(viewer) viewer.style.display = 'none';
+  const listEl = document.getElementById(winId + '-list');
+  if(listEl) listEl.style.display = 'block';
 }
 
 function closeDoc(winId){
@@ -522,8 +659,8 @@ addDesktopIcon('myfiles', 'folder', 'My Files', ()=>{
     'myfiles',
     "R. Okabe's Files",
     'folder_open',
-    DOCS.lab.concat(DOCS.personal),
-    (DOCS.lab.length + DOCS.personal.length) + ' object(s)'
+    DOCS.lab.concat(DOCS.personal, IMAGE_FILES),
+    (DOCS.lab.length + DOCS.personal.length + IMAGE_FILES.length) + ' object(s)'
   );
 });
 
@@ -737,7 +874,8 @@ window.__openMyFiles = ()=>{
     "R. Okabe's Files",
     'folder_open',
     DOCS.lab.concat(DOCS.personal),
-    (DOCS.lab.length + DOCS.personal.length) + ' object(s)'
+    (DOCS.lab.length + DOCS.personal.length) + ' object(s)',
+    true
   );
 };
 
