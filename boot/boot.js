@@ -114,6 +114,10 @@
 
           enterPressed = true;
 
+          if (window.__requestOkabeFullscreen) {
+            window.__requestOkabeFullscreen();
+          }
+
           document.removeEventListener(
             "keydown",
             keyHandler,
