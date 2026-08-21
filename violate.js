@@ -126,7 +126,7 @@
         showPenaltyComplete(violationNumber);
         clearInterval(penaltyTimer);
         penaltyTimer = null;
-        sessionStorage.removeItem(penaltyKey);
+        localStorage.removeItem(penaltyKey);
         return;
       }
 
@@ -142,12 +142,12 @@
   function beginViolation(){
     if(penaltyOverlay) return;
 
-    const violationNumber = Number(sessionStorage.getItem(violationKey) || 0) + 1;
+    const violationNumber = Number(localStorage.getItem(violationKey) || 0) + 1;
     const duration = violationNumber === 1 ? 60 * 1000 : 10 * 60 * 1000;
     const endsAt = Date.now() + duration;
 
-    sessionStorage.setItem(violationKey, String(violationNumber));
-    sessionStorage.setItem(penaltyKey, String(endsAt));
+    localStorage.setItem(violationKey, String(violationNumber));
+    localStorage.setItem(penaltyKey, String(endsAt));
     showPenalty(violationNumber, endsAt);
   }
 
@@ -165,10 +165,10 @@
     if(!isFullscreen() && !penaltyOverlay) requestFullscreen();
   }, true);
 
-  const storedPenaltyEnd = Number(sessionStorage.getItem(penaltyKey) || 0);
+  const storedPenaltyEnd = Number(localStorage.getItem(penaltyKey) || 0);
   if(storedPenaltyEnd > Date.now()){
-    showPenalty(Number(sessionStorage.getItem(violationKey) || 1), storedPenaltyEnd);
+    showPenalty(Number(localStorage.getItem(violationKey) || 1), storedPenaltyEnd);
   } else if(storedPenaltyEnd){
-    sessionStorage.removeItem(penaltyKey);
+    localStorage.removeItem(penaltyKey);
   }
 })();
