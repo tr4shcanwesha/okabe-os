@@ -76,7 +76,20 @@
   animation: crtText .18s linear infinite;
 }
 
+.boot-star {
+  position: absolute;
+  top: 28px;
+  right: 34px;
+  width: min(275px, 42vw);
+  height: auto;
+  opacity: .82;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
 #boot-output {
+  position: relative;
+  z-index: 1;
   max-width: 950px;
 }
 
