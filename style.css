@@ -23,12 +23,40 @@ body {
 #fullscreen-penalty {
   position:fixed; inset:0; z-index:2147483646;
   display:flex; align-items:center; justify-content:center;
-  background:rgba(0,0,0,.55); cursor:wait;
+  background:#000; color:#aaa; cursor:wait;
+  font-family:"Courier New", monospace;
+  overflow:hidden;
+}
+
+#fullscreen-penalty::before {
+  content:"";
+  position:absolute; inset:-5px 0;
+  pointer-events:none;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.07) 0,
+    rgba(255,255,255,.07) 1px,
+    rgba(0,0,0,.18) 2px,
+    rgba(0,0,0,.18) 4px
+  );
+  animation:penalty-scanlines .18s linear infinite;
+}
+
+#fullscreen-penalty::after {
+  content:"";
+  position:absolute; inset:0;
+  pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 48%, rgba(0,0,0,.7) 100%);
+  animation:penalty-flicker .12s steps(2) infinite;
 }
 
 .fullscreen-dialog {
+  position:relative;
+  z-index:1;
   width:min(390px, calc(100vw - 24px));
   background:#c0c0c0; padding:3px;
+  color:#000;
+  font-family:Tahoma, "Segoe UI", Arial, sans-serif;
 }
 
 .fullscreen-body {
@@ -55,6 +83,16 @@ body {
 
 .fullscreen-actions {
   display:flex; justify-content:flex-end; padding:0 8px 8px;
+}
+
+@keyframes penalty-scanlines {
+  from { transform:translateY(0); }
+  to { transform:translateY(4px); }
+}
+
+@keyframes penalty-flicker {
+  0%, 100% { opacity:1; }
+  50% { opacity:.92; }
 }
 
 /* ========== 3D BEVEL EFFECTS ========== */
