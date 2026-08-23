@@ -282,6 +282,7 @@ body {
 .image-lamp-source.is-lit span { filter:none; }
 .image-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-left:4px; }
 .image-canvas { position:relative; flex:1; min-height:120px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#808080; padding:12px; cursor:default; }
+.image-canvas.evidence-canvas { background:#000; }
 .image-preview { display:block; max-width:100%; max-height:100%; object-fit:contain; transform-origin:center center; user-select:none; pointer-events:none; }
 .image-darkness { position:absolute; inset:0; z-index:2; pointer-events:none; background:#000; }
 .image-darkness.is-lit { background:radial-gradient(circle at var(--lamp-x) var(--lamp-y), transparent 0, rgba(0,0,0,.03) calc(var(--lamp-radius) * .34), rgba(0,0,0,.22) calc(var(--lamp-radius) * .58), rgba(0,0,0,.62) calc(var(--lamp-radius) * .78), rgba(0,0,0,.9) calc(var(--lamp-radius) * .92), #000 var(--lamp-radius)); }

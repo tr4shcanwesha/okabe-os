@@ -291,7 +291,7 @@ function openImage(winId, image){
       <button class="btn95 image-lamp-source" type="button" aria-label="Toggle lamp" title="Toggle lamp" onclick="toggleImageLamp('${winId}')"><span aria-hidden="true">💡</span></button>
       <span class="image-name">${image.name}</span>
     </div>
-    <div class="image-canvas sunken">
+    <div class="image-canvas sunken ${isEvidenceFile(image) ? 'evidence-canvas' : ''}">
       <img class="image-preview" src="${image.src}" alt="${image.name}">
       <div class="image-darkness" aria-hidden="true"></div>
       <div class="image-lamps"></div>
