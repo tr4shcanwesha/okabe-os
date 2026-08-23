@@ -1,6 +1,9 @@
 /* ============================================================
    CONTENT: FILE SYSTEM FOR RINTARO OKABE
    ============================================================ */
+/* ============================================================
+  BRIEFCASE / DOCUMENT FILES
+  ============================================================ */
 const DOCS = {
   lab: [
     {
@@ -114,6 +117,9 @@ even the work. I think I am just bad at endings.]
   ]
 };
 
+/* ============================================================
+  IMAGE VIEWER FILES
+  ============================================================ */
 const imageFileTypes = ['image/png', 'image/jpeg'];
 
 const IMAGE_FILES = [
@@ -263,6 +269,9 @@ function openDoc(winId, idx){
   `;
 }
 
+/* ============================================================
+  IMAGE VIEWER
+  ============================================================ */
 function openImage(winId, image){
   const w = openWindows[winId].el;
   const listEl = document.getElementById(winId + '-list');
@@ -279,91 +288,95 @@ function openImage(winId, image){
   viewer.innerHTML = `
     <div class="image-toolbar">
       <button class="btn95" type="button" onclick="closeImage('${winId}')">&laquo; Back</button>
-      <button class="btn95" type="button" onclick="zoomImage('${winId}', -0.1)">-</button>
-      <button class="btn95" type="button" onclick="fitImage('${winId}')">Fit</button>
-      <button class="btn95" type="button" onclick="zoomImage('${winId}', 0.1)">+</button>
+      <button class="btn95 image-lamp-source" type="button" aria-label="Toggle lamp" title="Toggle lamp" onclick="toggleImageLamp('${winId}')"><span aria-hidden="true">💡</span></button>
       <span class="image-name">${image.name}</span>
     </div>
     <div class="image-canvas sunken">
       <img class="image-preview" src="${image.src}" alt="${image.name}">
+      <div class="image-darkness" aria-hidden="true"></div>
+      <div class="image-lamps"></div>
     </div>
   `;
 
-  viewer.dataset.zoom = '1';
-  viewer.dataset.panX = '0';
-  viewer.dataset.panY = '0';
+  const canvas = viewer.querySelector('.image-canvas');
+}
+
+function toggleImageLamp(winId){
+  const viewer = openWindows[winId]?.el.querySelector('.image-view');
+  if(!viewer) return;
 
   const canvas = viewer.querySelector('.image-canvas');
-  const preview = viewer.querySelector('.image-preview');
-  let dragging = false;
+  const lampLayer = viewer.querySelector('.image-lamps');
+  const source = viewer.querySelector('.image-lamp-source');
+  const darkness = viewer.querySelector('.image-darkness');
+  if(lampLayer.firstElementChild){
+    lampLayer.replaceChildren();
+    source.classList.remove('is-lit');
+    darkness.classList.remove('is-lit');
+    return;
+  }
+
+  const lamp = document.createElement('div');
+  lamp.className = 'image-lamp';
+  lamp.innerHTML = '<span aria-hidden="true">💡</span>';
+  lamp.style.left = '28px';
+  lamp.style.top = '28px';
+  lampLayer.appendChild(lamp);
+  source.classList.add('is-lit');
+  darkness.classList.add('is-lit');
+
+  let moved = false;
   let startX = 0;
   let startY = 0;
-  let startPanX = 0;
-  let startPanY = 0;
+  let startLeft = 0;
+  let startTop = 0;
 
-  canvas.addEventListener('pointerdown', (event)=>{
-    dragging = true;
+  const updateLampLight = ()=>{
+    const x = lamp.offsetLeft + lamp.offsetWidth / 2;
+    const y = lamp.offsetTop + lamp.offsetHeight / 2;
+    const radius = Math.min(canvas.clientWidth, canvas.clientHeight) * 2 / 9;
+    darkness.style.setProperty('--lamp-x', `${x}px`);
+    darkness.style.setProperty('--lamp-y', `${y}px`);
+    darkness.style.setProperty('--lamp-radius', `${radius}px`);
+  };
+
+  lamp.addEventListener('pointerdown', (event)=>{
+    moved = false;
     startX = event.clientX;
     startY = event.clientY;
-    startPanX = Number(viewer.dataset.panX || 0);
-    startPanY = Number(viewer.dataset.panY || 0);
-    canvas.setPointerCapture(event.pointerId);
-    canvas.classList.add('is-dragging');
+    startLeft = lamp.offsetLeft;
+    startTop = lamp.offsetTop;
+    lamp.setPointerCapture(event.pointerId);
     event.preventDefault();
     event.stopPropagation();
   });
 
-  canvas.addEventListener('pointermove', (event)=>{
-    if(!dragging) return;
-    viewer.dataset.panX = (startPanX + event.clientX - startX).toString();
-    viewer.dataset.panY = (startPanY + event.clientY - startY).toString();
-    updateImagePosition(viewer, preview);
+  lamp.addEventListener('pointermove', (event)=>{
+    if(!lamp.hasPointerCapture(event.pointerId)) return;
+    const deltaX = event.clientX - startX;
+    const deltaY = event.clientY - startY;
+    if(Math.hypot(deltaX, deltaY) > 4) moved = true;
+    if(!moved) return;
+
+    const maxLeft = canvas.clientWidth - lamp.offsetWidth;
+    const maxTop = canvas.clientHeight - lamp.offsetHeight;
+    lamp.style.left = `${Math.max(0, Math.min(maxLeft, startLeft + deltaX))}px`;
+    lamp.style.top = `${Math.max(0, Math.min(maxTop, startTop + deltaY))}px`;
+    updateLampLight();
   });
 
-  const stopDragging = (event)=>{
-    if(!dragging) return;
-    dragging = false;
-    canvas.releasePointerCapture(event.pointerId);
-    canvas.classList.remove('is-dragging');
-  };
+  lamp.addEventListener('pointerup', (event)=>{
+    if(!lamp.hasPointerCapture(event.pointerId)) return;
+    lamp.releasePointerCapture(event.pointerId);
+    updateLampLight();
+  });
 
-  canvas.addEventListener('pointerup', stopDragging);
-  canvas.addEventListener('pointercancel', stopDragging);
-}
+  lamp.addEventListener('pointercancel', (event)=>{
+    if(lamp.hasPointerCapture(event.pointerId)) lamp.releasePointerCapture(event.pointerId);
+  });
 
-function updateImagePosition(viewer, image){
-  const zoom = Number(viewer.dataset.zoom || 1);
-  const canvas = viewer.querySelector('.image-canvas');
-  const canvasStyle = getComputedStyle(canvas);
-  const canvasWidth = canvas.clientWidth - parseFloat(canvasStyle.paddingLeft) - parseFloat(canvasStyle.paddingRight);
-  const canvasHeight = canvas.clientHeight - parseFloat(canvasStyle.paddingTop) - parseFloat(canvasStyle.paddingBottom);
-  const maxPanX = Math.abs(canvasWidth - image.offsetWidth * zoom) / 2;
-  const maxPanY = Math.abs(canvasHeight - image.offsetHeight * zoom) / 2;
-  const panX = Math.max(-maxPanX, Math.min(maxPanX, Number(viewer.dataset.panX || 0)));
-  const panY = Math.max(-maxPanY, Math.min(maxPanY, Number(viewer.dataset.panY || 0)));
-  viewer.dataset.panX = panX.toString();
-  viewer.dataset.panY = panY.toString();
-  image.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
-}
-
-function zoomImage(winId, change){
-  const viewer = openWindows[winId]?.el.querySelector('.image-view');
-  const image = viewer?.querySelector('.image-preview');
-  if(!viewer || !image) return;
-
-  const zoom = Math.min(4, Math.max(0.2, Number(viewer.dataset.zoom || 1) + change));
-  viewer.dataset.zoom = zoom.toString();
-  updateImagePosition(viewer, image);
-}
-
-function fitImage(winId){
-  const viewer = openWindows[winId]?.el.querySelector('.image-view');
-  const image = viewer?.querySelector('.image-preview');
-  if(!viewer || !image) return;
-  viewer.dataset.zoom = '1';
-  viewer.dataset.panX = '0';
-  viewer.dataset.panY = '0';
-  updateImagePosition(viewer, image);
+  updateLampLight();
+  new ResizeObserver(updateLampLight).observe(canvas);
 }
 
 function closeImage(winId){
