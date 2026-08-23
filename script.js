@@ -423,30 +423,110 @@ addDesktopIcon('online', 'online', 'Online Services', ()=>{
   );
 });
 
-addDesktopIcon('inbox', 'inbox', 'Inbox', ()=>{
-  const mail = [
-    {
-      name: 'RE: RE: RE: smell complaint (building mgmt)',
-      body: 'This is our third notice this month regarding odors from sub-basement. Please respond. — Building Management'
-    },
-    {
-      name: 'chem supply order #4471',
-      body: 'Your order of solder, wire, and "assorted 9V batteries (many)" has shipped.'
-    },
-    {
-      name: 'no subject',
-      body: "the numbers add up to nothing.\n\n- K"
-    }
-  ];
+const INBOX_READ_KEY = 'okabe.inbox.read';
+const inboxMessages = [
+  {
+    id: 'k-introduction', sender: 'K', subject: 'You need to see this',
+    date: '08/21/2026 11:34 AM',
+    body: `If you're reading this, the system is still operational.
 
-  docListWindow(
-    'inbox',
-    'Inbox',
-    'mail',
-    mail,
-    mail.length + ' message(s), 1 unread'
-  );
-});
+Okabe was working on something unusual before he disappeared. I don't know what went wrong, but he left pieces of his work scattered throughout this system.
+
+Find what he left behind. Start with the files, and don't assume the timestamps are correct.
+
+-- K`
+  },
+  {
+    id: 'building-management', sender: 'Building Management', subject: 'RE: RE: RE: smell complaint',
+    date: '08/19/2026 04:12 PM',
+    body: 'This is our third notice this month regarding odors from the sub-basement. Please respond.'
+  },
+  {
+    id: 'chem-supply', sender: 'Lab Supplies', subject: 'Chem supply order #4471',
+    date: '08/17/2026 09:05 AM',
+    body: 'Your order of solder, wire, and "assorted 9V batteries (many)" has shipped.'
+  }
+];
+
+function getInboxReadIds(){
+  const existing = localStorage.getItem(INBOX_READ_KEY);
+  const defaultReadIds = inboxMessages.slice(1).map(message => message.id);
+  if(!existing) return defaultReadIds;
+  try {
+    return [...new Set(defaultReadIds.concat(JSON.parse(existing)))];
+  } catch {
+    return defaultReadIds;
+  }
+}
+
+function updateInboxIndicator(){
+  const unread = inboxMessages.some(message => !getInboxReadIds().includes(message.id));
+  const badge = document.getElementById('inbox-unread');
+  if(badge) badge.hidden = !unread;
+}
+
+function markInboxRead(messageId){
+  const readIds = getInboxReadIds();
+  if(!readIds.includes(messageId)){
+    readIds.push(messageId);
+    localStorage.setItem(INBOX_READ_KEY, JSON.stringify(readIds));
+  }
+  updateInboxIndicator();
+}
+
+function renderInboxRows(){
+  const readIds = getInboxReadIds();
+  return inboxMessages.map((message, index)=>`
+    <div class="inbox-row ${readIds.includes(message.id) ? 'read' : 'unread'}" onclick="openInboxMessage(${index})">
+      <span class="inbox-status">${readIds.includes(message.id) ? '' : '*'}</span>
+      <span class="inbox-sender">${message.sender}</span>
+      <span class="inbox-subject">${message.subject}</span>
+      <span class="inbox-date">${message.date}</span>
+    </div>
+  `).join('');
+}
+
+function openInbox(){
+  if(openWindows.inbox){ restoreWindow('inbox'); return; }
+  openWindow('inbox', {
+    title: 'Inbox', icon: 'mail', width: 470, height: 330,
+    menu: ['File', 'Edit', 'View', 'Help'], status: inboxMessages.length + ' message(s)',
+    bodyHTML: `<div id="inbox-list">${renderInboxRows()}</div>`
+  });
+}
+
+function openInboxMessage(index){
+  const message = inboxMessages[index];
+  markInboxRead(message.id);
+  const win = openWindows.inbox && openWindows.inbox.el;
+  if(!win) return;
+  const list = win.querySelector('#inbox-list');
+  if(list) list.style.display = 'none';
+  let viewer = win.querySelector('.inbox-view');
+  if(!viewer){
+    viewer = document.createElement('div');
+    viewer.className = 'inbox-view';
+    win.querySelector('.win-body').appendChild(viewer);
+  }
+  viewer.style.display = 'block';
+  viewer.innerHTML = `
+    <button class="btn95 backbtn" type="button" onclick="closeInboxMessage()">&laquo; Back to Inbox</button>
+    <div class="inbox-header"><b>From:</b> ${message.sender}<br><b>Subject:</b> ${message.subject}<br><b>Date:</b> ${message.date}</div>
+    <pre>${message.body}</pre>
+  `;
+}
+
+function closeInboxMessage(){
+  const win = openWindows.inbox && openWindows.inbox.el;
+  if(!win) return;
+  const viewer = win.querySelector('.inbox-view');
+  const list = win.querySelector('#inbox-list');
+  if(viewer) viewer.style.display = 'none';
+  if(list){ list.innerHTML = renderInboxRows(); list.style.display = 'block'; }
+}
+
+addDesktopIcon('inbox', 'inbox', 'Inbox', openInbox);
+updateInboxIndicator();
 
 addDesktopIcon('internet', 'internet', 'Internet', ()=>{
   openWindow('internet', {
