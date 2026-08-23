@@ -291,7 +291,7 @@ function openImage(winId, image){
       <button class="btn95 image-lamp-source" type="button" aria-label="Toggle lamp" title="Toggle lamp" onclick="toggleImageLamp('${winId}')"><span aria-hidden="true">💡</span></button>
       <span class="image-name">${image.name}</span>
     </div>
-    <div class="image-canvas sunken">
+    <div class="image-canvas sunken ${isEvidenceFile(image) ? 'evidence-canvas' : ''}">
       <img class="image-preview" src="${image.src}" alt="${image.name}">
       <div class="image-darkness" aria-hidden="true"></div>
       <div class="image-lamps"></div>
@@ -306,6 +306,7 @@ function toggleImageLamp(winId){
   if(!viewer) return;
 
   const canvas = viewer.querySelector('.image-canvas');
+  const preview = viewer.querySelector('.image-preview');
   const lampLayer = viewer.querySelector('.image-lamps');
   const source = viewer.querySelector('.image-lamp-source');
   const darkness = viewer.querySelector('.image-darkness');
@@ -319,11 +320,16 @@ function toggleImageLamp(winId){
   const lamp = document.createElement('div');
   lamp.className = 'image-lamp';
   lamp.innerHTML = '<span aria-hidden="true">💡</span>';
-  lamp.style.left = '28px';
-  lamp.style.top = '28px';
   lampLayer.appendChild(lamp);
   source.classList.add('is-lit');
   darkness.classList.add('is-lit');
+
+  const centerLampOnImage = ()=>{
+    const canvasBounds = canvas.getBoundingClientRect();
+    const imageBounds = preview.getBoundingClientRect();
+    lamp.style.left = `${imageBounds.left - canvasBounds.left + (imageBounds.width - lamp.offsetWidth) / 2}px`;
+    lamp.style.top = `${imageBounds.top - canvasBounds.top + (imageBounds.height - lamp.offsetHeight) / 2}px`;
+  };
 
   let moved = false;
   let startX = 0;
@@ -375,6 +381,7 @@ function toggleImageLamp(winId){
     if(lamp.hasPointerCapture(event.pointerId)) lamp.releasePointerCapture(event.pointerId);
   });
 
+  centerLampOnImage();
   updateLampLight();
   new ResizeObserver(updateLampLight).observe(canvas);
 }
