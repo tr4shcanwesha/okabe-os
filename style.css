@@ -333,6 +333,27 @@ body {
 /* Task button window icon */
 .taskbtn img { width:16px; height:16px; flex:0 0 16px; }
 
+#tb-inbox { position:relative; min-width:82px; flex:0 0 82px; }
+.unread-badge {
+  position:absolute; right:4px; top:3px; min-width:13px; height:13px;
+  padding:0 3px; background:#800000; color:#fff; font:bold 10px Arial;
+  line-height:13px; text-align:center; box-shadow:1px 1px 0 #000;
+}
+
+.inbox-row {
+  display:grid; grid-template-columns:14px 112px 1fr 112px; gap:4px;
+  align-items:center; padding:4px 3px; border-bottom:1px solid #808080;
+  cursor:default;
+}
+.inbox-row:hover { background:#000080; color:#fff; }
+.inbox-row.unread { font-weight:bold; background:#dfdfdf; }
+.inbox-row.unread:hover { background:#000080; }
+.inbox-status { color:#800000; }
+.inbox-date { font-size:10px; text-align:right; white-space:nowrap; }
+.inbox-view { background:#fff; min-height:100%; padding:2px; user-select:text; }
+.inbox-header { border-bottom:1px solid #808080; padding:4px 2px 7px; line-height:1.5; }
+.inbox-view pre { white-space:pre-wrap; font:12px/1.45 "Courier New", monospace; margin:12px 2px; }
+
 /* #clock - Digital clock display on right side of taskbar */
 #clock {
   height:28px; display:flex; align-items:center; padding:0 8px;
