@@ -311,6 +311,7 @@ function toggleImageLamp(winId){
   const source = viewer.querySelector('.image-lamp-source');
   const darkness = viewer.querySelector('.image-darkness');
   if(lampLayer.firstElementChild){
+    if(viewer.__lampMessageTimer) clearTimeout(viewer.__lampMessageTimer);
     lampLayer.replaceChildren();
     source.classList.remove('is-lit');
     darkness.classList.remove('is-lit');
@@ -384,6 +385,15 @@ function toggleImageLamp(winId){
   centerLampOnImage();
   updateLampLight();
   new ResizeObserver(updateLampLight).observe(canvas);
+  if(localStorage.getItem(INBOX_IMAGE_FOUND_KEY) === 'true') return;
+  viewer.__lampMessageTimer = setTimeout(()=>{
+    showMessageBox(
+      'OKABE-OS 95',
+      '(1) new message in Inbox.',
+      'mail',
+      addFoundImageMessage
+    );
+  }, 5000);
 }
 
 function closeImage(winId){
