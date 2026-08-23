@@ -358,7 +358,8 @@ body {
 .inbox-row.unread { font-weight:bold; background:#dfdfdf; }
 .inbox-row.unread:hover { background:#000080; }
 .inbox-status { color:#800000; }
-.inbox-date { font-size:10px; text-align:right; white-space:nowrap; }
+.inbox-date { font-size:10px; text-align:right; white-space:nowrap; padding-right:16px; }
+.inbox-row.unread .inbox-date { font-weight:normal; }
 .inbox-view { background:#fff; min-height:100%; padding:2px; user-select:text; }
 .inbox-header { border-bottom:1px solid #808080; padding:4px 2px 7px; line-height:1.5; }
 .inbox-view pre { white-space:pre-wrap; font:12px/1.45 "Courier New", monospace; margin:12px 2px; }
