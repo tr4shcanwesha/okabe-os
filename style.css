@@ -435,8 +435,11 @@ body {
 /* Dialog message text */
 .msgbox-body .txt { flex:1; font-size:12px; padding-top:4px; }
 
-.evidence-password { display:block; margin-top:6px; }
-.evidence-error { text-align:center; }
+.password-field { display:flex; align-items:stretch; margin-top:6px; }
+.password-field input { min-width:0; }
+.password-toggle { width:24px; padding:0; border:0; background:#c0c0c0; font-size:14px; line-height:1; cursor:default; }
+.password-toggle:active { box-shadow:inset 1px 1px 0 #000, inset -1px -1px 0 #fff; }
+.evidence-error, .k-password-error { min-height:14px; text-align:center; color:#800000; }
 
 /* Dialog button container - centered button layout */
 .msgbox-buttons { display:flex; justify-content:center; padding:8px; gap: 12px;}
