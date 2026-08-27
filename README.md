@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="1913" height="1023" alt="image" src="https://github.com/user-attachments/assets/b6f3a1ec-32da-48b0-b82b-93ff1eec940d" />
+  <img width="1913" height="1023" alt="OKABE-OS desktop" src="https://github.com/user-attachments/assets/b6f3a1ec-32da-48b0-b82b-93ff1eec940d" />
 </p>
 
 <h1>OKABE-OS</h1>
@@ -37,11 +37,22 @@ okabe-os/
 ├── index.html
 ├── script.js              # Core OS functionality
 ├── style.css              # Global styling
+├── okabe-os-logo.png       # Favicon and OS branding
 │
-└── wordle/
+├── boot/
+│   ├── boot.js             # Boot sequence logic
+│   └── boot.css            # Boot screen styling
+│
+├── utils/
+│   ├── filesystem.js       # Virtual filesystem
+│   ├── inbox.js            # Inbox functionality
+│   ├── network.js          # Network functionality
+│   └── reset.js             # OS reset functionality
+│
+└── wordle/                 # Wordle application
     ├── wordle.js          # Wordle application logic
     └── wordle.css         # Wordle-specific styling
-````
+```
 
 ## Core OS
 
@@ -51,16 +62,20 @@ okabe-os/
 * Window management
 * Taskbar
 * Start menu
-* Virtual filesystem
+* Core desktop integration
 * Message boxes
 * Shared OS utilities
+
+Supporting shared modules live in `utils/`. Keep application-specific logic in
+the application's own directory.
 
 > [!WARNING]
 > Avoid adding application-specific logic to `script.js` unless the functionality is genuinely part of the core OS.
 
 ## Adding an Application
 
-Each application should have its own directory.
+Each application should have its own directory. The current example is
+`wordle/`.
 
 ```text
 new-app/
@@ -74,6 +89,9 @@ Add the required files to `index.html`:
 <link rel="stylesheet" href="new-app/new-app.css">
 <script src="new-app/new-app.js"></script>
 ```
+
+Load application styles in the `<head>` and application scripts near the end
+of `<body>`, after the core OS scripts.
 
 Use the existing OS functions when integrating applications with the desktop and window system.
 
