@@ -132,6 +132,7 @@ const IMAGE_FILES = [
 ];
 
 const EVIDENCE_UNLOCK_KEY = 'okabe.evidence.unlocked';
+const IMG_PASSWORD = 'SPLIT314';
 
 if(localStorage.getItem(EVIDENCE_UNLOCK_KEY) === 'true'){
   IMAGE_FILES[0].name = 'evidence.png (UNLOCKED)';
@@ -197,7 +198,10 @@ function requestEvidencePassword(winId, file){
       <img src="${ICON_URLS['cat']}" width="32" height="32" alt="">
       <div class="txt">
         <div>Enter the password to open:</div>
-        <input class="evidence-password" type="password" maxlength="10" autocomplete="off" autofocus>
+        <div class="password-field">
+          <input class="evidence-password" type="password" maxlength="10" autocomplete="off" autofocus>
+          <button class="password-toggle" type="button" aria-label="Show password" title="Show password">&#128065;</button>
+        </div>
       </div>
     </form>
 
@@ -216,14 +220,21 @@ function requestEvidencePassword(winId, file){
   const form = box.querySelector('form');
   const password = box.querySelector('.evidence-password');
   const error = box.querySelector('.evidence-error');
+  const passwordToggle = box.querySelector('.password-toggle');
 
   box.querySelector('.mb-close').onclick = close;
   box.querySelector('.mb-cancel').onclick = close;
   box.querySelector('.mb-ok').onclick = ()=>form.requestSubmit();
+  passwordToggle.onclick = ()=>{
+    const showing = password.type === 'text';
+    password.type = showing ? 'password' : 'text';
+    passwordToggle.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+    passwordToggle.title = showing ? 'Show password' : 'Hide password';
+  };
   form.onsubmit = (event)=>{
     event.preventDefault();
 
-    if(password.value !== 'SPLIT314'){
+    if(password.value !== IMG_PASSWORD){
       error.textContent = 'Incorrect password.';
       password.select();
       return;

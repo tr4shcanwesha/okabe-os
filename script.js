@@ -409,8 +409,8 @@ addDesktopIcon('network', 'network', 'Network', ()=>{
         <span>OKABE-LAB-01</span>
       </div>
 
-      <div class="file-row"
-           onclick="showMessageBox('K-WORKSTATION','Connection refused. It has been refused for a long time.','computer')">
+       <div class="file-row"
+         onclick="connectKWorkstation()">
         <img class="fico" src="${ICON_URLS['computer']}">
         <span>K-WORKSTATION</span>
       </div>
