@@ -288,10 +288,12 @@ body {
 .file-row:hover { background:#000080; color:#fff; }
 
 /* Document view heading */
-.doc-view h3 { margin-top:0; }
+.doc-view { min-height:100%; background:#fff; padding:2px; user-select:text; }
+.doc-view h3 { margin:0 0 6px; padding:4px 2px 7px; border-bottom:1px solid #808080; }
 
 /* Preformatted text in document view */
-.doc-view pre { white-space:pre-wrap; font-family: "Courier New", monospace; font-size:12px; }
+.doc-view pre { white-space:pre-wrap; font:12px/1.45 "Courier New", monospace; margin:12px 2px; }
+.win[data-max="1"] .doc-view pre { white-space:normal; }
 
 /* Back button styling */
 .backbtn { margin-bottom:6px; }
@@ -375,19 +377,31 @@ body {
 }
 
 .inbox-row {
-  display:grid; grid-template-columns:14px 112px 1fr 112px; gap:4px;
-  align-items:center; padding:4px 3px; border-bottom:1px solid #808080;
+  display:grid; grid-template-columns:14px 92px minmax(150px, 2fr) 126px; gap:4px;
+  align-items:center; min-height:18px; padding:1px 3px; border-bottom:1px solid #808080;
   cursor:default;
 }
 .inbox-row:hover { background:#000080; color:#fff; }
 .inbox-row.unread { font-weight:bold; background:#dfdfdf; }
 .inbox-row.unread:hover { background:#000080; }
 .inbox-status { color:#800000; }
+.inbox-sender, .inbox-subject { min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
 .inbox-date { font-size:10px; text-align:right; white-space:nowrap; padding-right:16px; }
 .inbox-row.unread .inbox-date { font-weight:normal; }
-.inbox-view { background:#fff; min-height:100%; padding:2px; user-select:text; }
-.inbox-header { border-bottom:1px solid #808080; padding:4px 2px 7px; line-height:1.5; }
-.inbox-view pre { white-space:pre-wrap; font:12px/1.45 "Courier New", monospace; margin:12px 2px; }
+.mail-app { display:flex; height:100%; min-height:250px; background:#fff; border:1px solid #808080; }
+.mail-folders { flex:0 0 154px; background:#c0c0c0; border-right:1px solid #808080; }
+.mail-folder-title, .mail-list-title { font-weight:bold; padding:3px 5px; background:#c0c0c0; border-bottom:1px solid #808080; }
+.mail-folder { display:flex; align-items:center; gap:5px; padding:2px 5px; cursor:default; }
+.mail-folder img { width:16px; height:16px; }
+.mail-folder:hover, .mail-folder.active { background:#000080; color:#fff; }
+.mail-list-pane { flex:1; min-width:0; overflow:auto; }
+.inbox-columns, .inbox-row { grid-template-columns:14px 92px minmax(150px, 2fr) 126px; }
+.inbox-columns { display:grid; gap:4px; padding:2px 3px; background:#c0c0c0; border-bottom:1px solid #808080; font-weight:bold; }
+.inbox-columns span { overflow:hidden; white-space:nowrap; }
+.mail-message-view { min-height:100%; background:#fff; padding:2px; user-select:text; }
+.mail-back { margin-bottom:5px; }
+.mail-message-header { border:1px solid #808080; background:#c0c0c0; padding:5px; line-height:1.45; }
+.mail-message-view pre { white-space:pre-wrap; font:12px/1.45 "Courier New", monospace; margin:12px 2px; }
 
 /* #clock - Digital clock display on right side of taskbar */
 #clock {
