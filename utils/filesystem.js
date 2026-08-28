@@ -118,7 +118,7 @@ even the work. I think I am just bad at endings.]
 };
 
 /* ============================================================
-  IMAGE VIEWER FILES
+  FILES
   ============================================================ */
 const imageFileTypes = ['image/png', 'image/jpeg'];
 
@@ -150,7 +150,51 @@ function isEvidenceFile(file){
   return file.src === 'images/IMG_19980821_031427.jpeg';
 }
 
+const FILE_VIEW_STORAGE_KEY = 'okabe.file-view';
+const FILE_VIEWS = ['large', 'medium', 'small', 'tiles'];
+
+function setFileView(winId, view){
+  const win = openWindows[winId]?.el;
+  const list = document.getElementById(winId + '-list');
+  if(!win || !list || !FILE_VIEWS.includes(view)) return;
+
+  list.className = `file-list file-view-${view}`;
+  localStorage.setItem(FILE_VIEW_STORAGE_KEY, view);
+  win.querySelector('.file-view-menu')?.remove();
+}
+
+function openFileViewMenu(winId, menuItem){
+  const win = openWindows[winId]?.el;
+  if(!win) return;
+
+  const existingMenu = win.querySelector('.file-view-menu');
+  if(existingMenu){
+    existingMenu.remove();
+    return;
+  }
+
+  const menu = document.createElement('div');
+  menu.className = 'file-view-menu raised';
+  menu.innerHTML = `
+    <button type="button" data-view="large">Large icons</button>
+    <button type="button" data-view="medium">Medium icons</button>
+    <button type="button" data-view="small">Small icons</button>
+    <button type="button" data-view="tiles">Tiles</button>
+  `;
+
+  const menubar = menuItem.closest('.menubar');
+  menu.style.left = `${menuItem.offsetLeft}px`;
+  menu.style.top = `${menubar.offsetTop + menubar.offsetHeight + 1}px`;
+  menu.addEventListener('click', (event)=>{
+    const option = event.target.closest('[data-view]');
+    if(option) setFileView(winId, option.dataset.view);
+  });
+  win.appendChild(menu);
+}
+
 function docListWindow(winId, title, iconKey, docs, statusText){
+  const savedView = localStorage.getItem(FILE_VIEW_STORAGE_KEY);
+  const view = FILE_VIEWS.includes(savedView) ? savedView : 'medium';
   const rows = docs.map((d,i)=>
     `<div class="file-row" ondblclick="openFile('${winId}',${i})">
       <img class="fico" src="${fileIcon(d)}" alt="">
@@ -158,15 +202,24 @@ function docListWindow(winId, title, iconKey, docs, statusText){
     </div>`
   ).join('');
 
-  openWindow(winId, {
+  const win = openWindow(winId, {
     title,
     icon: iconKey,
     width: 340,
     height: 280,
     menu: ['File','Edit','View','Help'],
     status: statusText || (docs.length + ' object(s)'),
-    bodyHTML: `<div id="${winId}-list">${rows}</div>`
+    bodyHTML: `<div id="${winId}-list" class="file-list file-view-${view}">${rows}</div>`
   });
+
+  const viewMenuItem = [...win.querySelectorAll('.menubar span')]
+    .find(item => item.textContent === 'View');
+  if(viewMenuItem){
+    viewMenuItem.addEventListener('click', (event)=>{
+      event.stopPropagation();
+      openFileViewMenu(winId, viewMenuItem);
+    });
+  }
 
   window['__docs_' + winId] = docs;
 }
@@ -278,154 +331,4 @@ function openDoc(winId, idx){
     <h3>${doc.name}</h3>
     <pre>${doc.body}</pre>
   `;
-}
-
-/* ============================================================
-  IMAGE VIEWER
-  ============================================================ */
-function openImage(winId, image){
-  const w = openWindows[winId].el;
-  const listEl = document.getElementById(winId + '-list');
-  if(listEl) listEl.style.display = 'none';
-
-  let viewer = w.querySelector('.image-view');
-  if(!viewer){
-    viewer = document.createElement('div');
-    viewer.className = 'image-view';
-    w.querySelector('.win-body').appendChild(viewer);
-  }
-
-  viewer.style.display = 'flex';
-  viewer.innerHTML = `
-    <div class="image-toolbar">
-      <button class="btn95 image-back" type="button" onclick="closeImage('${winId}')">&laquo; Back</button>
-      <button class="btn95 image-lamp-source" type="button" aria-label="Toggle lamp" title="Toggle lamp" onclick="toggleImageLamp('${winId}')"><span aria-hidden="true">💡</span></button>
-      <span class="image-name">${image.name}</span>
-    </div>
-    <div class="image-canvas sunken ${isEvidenceFile(image) ? 'evidence-canvas' : ''}">
-      <img class="image-preview" src="${image.src}" alt="${image.name}">
-      <div class="image-darkness" aria-hidden="true"></div>
-      <div class="image-lamps"></div>
-    </div>
-  `;
-
-  const canvas = viewer.querySelector('.image-canvas');
-}
-
-function toggleImageLamp(winId){
-  const viewer = openWindows[winId]?.el.querySelector('.image-view');
-  if(!viewer) return;
-
-  const canvas = viewer.querySelector('.image-canvas');
-  const preview = viewer.querySelector('.image-preview');
-  const lampLayer = viewer.querySelector('.image-lamps');
-  const source = viewer.querySelector('.image-lamp-source');
-  const darkness = viewer.querySelector('.image-darkness');
-  if(lampLayer.firstElementChild){
-    if(viewer.__lampMessageTimer) clearTimeout(viewer.__lampMessageTimer);
-    lampLayer.replaceChildren();
-    source.classList.remove('is-lit');
-    darkness.classList.remove('is-lit');
-    return;
-  }
-
-  const lamp = document.createElement('div');
-  lamp.className = 'image-lamp';
-  lamp.innerHTML = '<span aria-hidden="true">💡</span>';
-  lampLayer.appendChild(lamp);
-  source.classList.add('is-lit');
-  darkness.classList.add('is-lit');
-
-  const centerLampOnImage = ()=>{
-    const canvasBounds = canvas.getBoundingClientRect();
-    const imageBounds = preview.getBoundingClientRect();
-    lamp.style.left = `${imageBounds.left - canvasBounds.left + (imageBounds.width - lamp.offsetWidth) / 2}px`;
-    lamp.style.top = `${imageBounds.top - canvasBounds.top + (imageBounds.height - lamp.offsetHeight) / 2}px`;
-  };
-
-  let moved = false;
-  let startX = 0;
-  let startY = 0;
-  let startLeft = 0;
-  let startTop = 0;
-
-  const updateLampLight = ()=>{
-    const x = lamp.offsetLeft + lamp.offsetWidth / 2;
-    const y = lamp.offsetTop + lamp.offsetHeight / 2;
-    const radius = Math.min(canvas.clientWidth, canvas.clientHeight) * 2 / 9;
-    darkness.style.setProperty('--lamp-x', `${x}px`);
-    darkness.style.setProperty('--lamp-y', `${y}px`);
-    darkness.style.setProperty('--lamp-radius', `${radius}px`);
-  };
-
-  lamp.addEventListener('pointerdown', (event)=>{
-    moved = false;
-    startX = event.clientX;
-    startY = event.clientY;
-    startLeft = lamp.offsetLeft;
-    startTop = lamp.offsetTop;
-    lamp.setPointerCapture(event.pointerId);
-    event.preventDefault();
-    event.stopPropagation();
-  });
-
-  lamp.addEventListener('pointermove', (event)=>{
-    if(!lamp.hasPointerCapture(event.pointerId)) return;
-    const deltaX = event.clientX - startX;
-    const deltaY = event.clientY - startY;
-    if(Math.hypot(deltaX, deltaY) > 4) moved = true;
-    if(!moved) return;
-
-    const maxLeft = canvas.clientWidth - lamp.offsetWidth;
-    const maxTop = canvas.clientHeight - lamp.offsetHeight;
-    lamp.style.left = `${Math.max(0, Math.min(maxLeft, startLeft + deltaX))}px`;
-    lamp.style.top = `${Math.max(0, Math.min(maxTop, startTop + deltaY))}px`;
-    updateLampLight();
-  });
-
-  lamp.addEventListener('pointerup', (event)=>{
-    if(!lamp.hasPointerCapture(event.pointerId)) return;
-    lamp.releasePointerCapture(event.pointerId);
-    updateLampLight();
-  });
-
-  lamp.addEventListener('pointercancel', (event)=>{
-    if(lamp.hasPointerCapture(event.pointerId)) lamp.releasePointerCapture(event.pointerId);
-  });
-
-  centerLampOnImage();
-  updateLampLight();
-  new ResizeObserver(updateLampLight).observe(canvas);
-  if(localStorage.getItem(INBOX_IMAGE_FOUND_KEY) === 'true') return;
-  viewer.__lampMessageTimer = setTimeout(()=>{
-    showMessageBox(
-      'OKABE-OS 95',
-      '(1) new message in Inbox.',
-      'mail',
-      addFoundImageMessage
-    );
-  }, 5000);
-}
-
-function closeImage(winId){
-  const w = openWindows[winId].el;
-  const viewer = w.querySelector('.image-view');
-  if(viewer) viewer.style.display = 'none';
-  const listEl = document.getElementById(winId + '-list');
-  if(listEl) listEl.style.display = 'block';
-}
-
-function closeDoc(winId){
-  const w = openWindows[winId].el;
-  const viewer = w.querySelector('.doc-view');
-
-  if(viewer){
-    viewer.style.display = 'none';
-  }
-
-  const listEl = document.getElementById(winId + '-list');
-
-  if(listEl){
-    listEl.style.display = 'block';
-  }
 }
