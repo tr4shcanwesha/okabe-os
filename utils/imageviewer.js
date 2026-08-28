@@ -3,6 +3,7 @@
   ============================================================ */
 function openImage(winId, image){
   const w = openWindows[winId].el;
+  const isEvidence = isEvidenceFile(image);
   const listEl = document.getElementById(winId + '-list');
   if(listEl) listEl.style.display = 'none';
 
@@ -17,13 +18,12 @@ function openImage(winId, image){
   viewer.innerHTML = `
     <div class="image-toolbar">
       <button class="btn95 image-back" type="button" onclick="closeImage('${winId}')">&laquo; Back</button>
-      <button class="btn95 image-lamp-source" type="button" aria-label="Toggle lamp" title="Toggle lamp" onclick="toggleImageLamp('${winId}')"><span aria-hidden="true">💡</span></button>
+      ${isEvidence ? '<button class="btn95 image-lamp-source" type="button" aria-label="Toggle lamp" title="Toggle lamp" onclick="toggleImageLamp(\'' + winId + '\')"><span aria-hidden="true">💡</span></button>' : ''}
       <span class="image-name">${image.name}</span>
     </div>
-    <div class="image-canvas sunken ${isEvidenceFile(image) ? 'evidence-canvas' : ''}">
+    <div class="image-canvas sunken ${isEvidence ? 'evidence-canvas' : ''}">
       <img class="image-preview" src="${image.src}" alt="${image.name}">
-      <div class="image-darkness" aria-hidden="true"></div>
-      <div class="image-lamps"></div>
+      ${isEvidence ? '<div class="image-darkness" aria-hidden="true"></div><div class="image-lamps"></div>' : ''}
     </div>
   `;
 
