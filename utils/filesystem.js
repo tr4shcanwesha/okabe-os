@@ -194,7 +194,7 @@ function openFileViewMenu(winId, menuItem){
 
 function docListWindow(winId, title, iconKey, docs, statusText){
   const savedView = localStorage.getItem(FILE_VIEW_STORAGE_KEY);
-  const view = FILE_VIEWS.includes(savedView) ? savedView : 'medium';
+  const view = FILE_VIEWS.includes(savedView) ? savedView : 'small';
   const rows = docs.map((d,i)=>
     `<div class="file-row" ondblclick="openFile('${winId}',${i})">
       <img class="fico" src="${fileIcon(d)}" alt="">

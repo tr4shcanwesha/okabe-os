@@ -147,7 +147,7 @@ function closeImage(winId){
   const viewer = w.querySelector('.image-view');
   if(viewer) viewer.style.display = 'none';
   const listEl = document.getElementById(winId + '-list');
-  if(listEl) listEl.style.display = 'block';
+  if(listEl) listEl.style.display = '';
 }
 
 function closeDoc(winId){
@@ -161,6 +161,6 @@ function closeDoc(winId){
   const listEl = document.getElementById(winId + '-list');
 
   if(listEl){
-    listEl.style.display = 'block';
+    listEl.style.display = '';
   }
 }
