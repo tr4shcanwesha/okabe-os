@@ -128,6 +128,30 @@ const IMAGE_FILES = [
     type: 'image',
     mimeType: 'image/jpeg',
     src: 'images/IMG_19980821_031427.jpeg'
+  },
+  {
+    name: 'IMG_20030714_223859.png',
+    type: 'image',
+    mimeType: 'image/png',
+    src: 'images/IMG_20030714_223859.png'
+  },
+  {
+    name: 'IMG_20051102_223907.png',
+    type: 'image',
+    mimeType: 'image/png',
+    src: 'images/IMG_20051102_223907.png'
+  },
+  {
+    name: 'IMG_20080221_223927.png',
+    type: 'image',
+    mimeType: 'image/png',
+    src: 'images/IMG_20080221_223927.png'
+  },
+  {
+    name: 'IMG_20010609_224212.png',
+    type: 'image',
+    mimeType: 'image/png',
+    src: 'images/IMG_20010609_224212.png'
   }
 ];
 
@@ -196,7 +220,7 @@ function docListWindow(winId, title, iconKey, docs, statusText){
   const savedView = localStorage.getItem(FILE_VIEW_STORAGE_KEY);
   const view = FILE_VIEWS.includes(savedView) ? savedView : 'small';
   const rows = docs.map((d,i)=>
-    `<div class="file-row" ondblclick="openFile('${winId}',${i})">
+    `<div class="file-row" onclick="openFile('${winId}',${i})">
       <img class="fico" src="${fileIcon(d)}" alt="">
       <span>${d.name}</span>
     </div>`
@@ -205,8 +229,8 @@ function docListWindow(winId, title, iconKey, docs, statusText){
   const win = openWindow(winId, {
     title,
     icon: iconKey,
-    width: 340,
-    height: 280,
+    width: winId === 'myfiles' ? 460 : 340,
+    height: winId === 'myfiles' ? 340 : 280,
     menu: ['File','Edit','View','Help'],
     status: statusText || (docs.length + ' object(s)'),
     bodyHTML: `<div id="${winId}-list" class="file-list file-view-${view}">${rows}</div>`
