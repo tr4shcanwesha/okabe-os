@@ -255,13 +255,37 @@ body {
 /* ========== FILE LIST / DOCUMENT VIEWS ========== */
 
 /* File list row - each file/folder entry in a list */
-.file-row { display:flex; align-items:center; gap:6px; padding:3px 2px; }
+.file-row img, .file-row .fico { width:20px; height:20px; }
+.file-list { display:grid; align-content:start; gap:12px 8px; }
+.file-row { display:flex; align-items:center; gap:6px; padding:3px 2px; min-width:0; cursor:default; }
+.file-row span { min-width:0; overflow-wrap:anywhere; }
+.file-view-large { grid-template-columns:repeat(auto-fill, minmax(112px, 1fr)); }
+.file-view-medium { grid-template-columns:repeat(auto-fill, minmax(88px, 1fr)); }
+.file-view-small { grid-template-columns:repeat(auto-fill, minmax(66px, 1fr)); gap:8px 4px; }
+.file-view-large .file-row,
+.file-view-medium .file-row,
+.file-view-small .file-row { flex-direction:column; justify-content:flex-start; text-align:center; }
+.file-view-large .file-row { min-height:82px; }
+.file-view-medium .file-row { min-height:68px; }
+.file-view-small .file-row { min-height:52px; gap:3px; }
+.file-view-large .fico { width:64px; height:64px; }
+.file-view-medium .fico { width:48px; height:48px; }
+.file-view-small .fico { width:32px; height:32px; }
+.file-view-large .file-row span { max-width:104px; }
+.file-view-medium .file-row span { max-width:80px; }
+.file-view-small .file-row span { max-width:62px; font-size:11px; }
+.file-view-tiles { grid-template-columns:1fr; gap:2px; }
+.file-view-tiles .file-row { min-height:20px; }
+.file-view-tiles .fico { width:16px; height:16px; }
+.file-view-tiles .file-row span { max-width:none; }
+
+/* View menu options for file-list windows */
+.file-view-menu { position:absolute; z-index:20; min-width:116px; padding:2px; background:#c0c0c0; }
+.file-view-menu button { display:block; width:100%; border:0; padding:3px 8px; background:#c0c0c0; text-align:left; font:12px inherit; cursor:default; }
+.file-view-menu button:hover { background:#000080; color:#fff; }
 
 /* File row hover effect - dark blue highlight */
 .file-row:hover { background:#000080; color:#fff; }
-
-/* File row icons - file type icons */
-.file-row img, .file-row .fico { width:20px; height:20px; }
 
 /* Document view heading */
 .doc-view h3 { margin-top:0; }
