@@ -124,10 +124,10 @@ const imageFileTypes = ['image/png', 'image/jpeg'];
 
 const IMAGE_FILES = [
   {
-    name: 'evidence.png (LOCKED)',
+    name: 'IMG_19980821_031427.jpeg (LOCKED)',
     type: 'image',
-    mimeType: 'image/png',
-    src: 'images/evidence.png'
+    mimeType: 'image/jpeg',
+    src: 'images/IMG_19980821_031427.jpeg'
   }
 ];
 
@@ -135,7 +135,7 @@ const EVIDENCE_UNLOCK_KEY = 'okabe.evidence.unlocked';
 const IMG_PASSWORD = 'SPLIT314';
 
 if(localStorage.getItem(EVIDENCE_UNLOCK_KEY) === 'true'){
-  IMAGE_FILES[0].name = 'evidence.png (UNLOCKED)';
+  IMAGE_FILES[0].name = 'IMG_19980821_031427.jpeg (UNLOCKED)';
 }
 
 function isImageFile(file){
@@ -147,7 +147,7 @@ function fileIcon(file){
 }
 
 function isEvidenceFile(file){
-  return file.src === 'images/evidence.png';
+  return file.src === 'images/IMG_19980821_031427.jpeg';
 }
 
 function docListWindow(winId, title, iconKey, docs, statusText){
@@ -241,7 +241,7 @@ function requestEvidencePassword(winId, file){
     }
 
     localStorage.setItem(EVIDENCE_UNLOCK_KEY, 'true');
-    file.name = 'evidence.png (UNLOCKED)';
+    file.name = 'IMG_19980821_031427.jpeg (UNLOCKED)';
     close();
     openImage(winId, file);
   };
