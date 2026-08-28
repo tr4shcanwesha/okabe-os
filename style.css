@@ -276,6 +276,7 @@ body {
 .image-view { display:flex; flex-direction:column; height:100%; gap:6px; }
 .image-toolbar { display:flex; align-items:center; gap:4px; flex:0 0 auto; }
 .image-toolbar .btn95 { min-width:28px; padding-left:6px; padding-right:6px; }
+.image-toolbar .image-back { padding-top:1px; padding-bottom:1px; line-height:16px; }
 .image-lamp-source { font-size:15px; line-height:16px; padding:1px 6px !important; }
 .image-lamp-source span { filter:grayscale(1) saturate(0) brightness(1.8); }
 .image-lamp-source.is-lit { background:#e8d66b; }

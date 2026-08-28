@@ -143,7 +143,7 @@ function isImageFile(file){
 }
 
 function fileIcon(file){
-  return isImageFile(file) ? (file.mimeType === 'image/png' ? ICON_URLS['cat'] : ICON_URLS['doc']) : ICON_URLS['doc'];
+  return isImageFile(file) ? ICON_URLS['cat'] : ICON_URLS['doc'];
 }
 
 function isEvidenceFile(file){
@@ -298,7 +298,7 @@ function openImage(winId, image){
   viewer.style.display = 'flex';
   viewer.innerHTML = `
     <div class="image-toolbar">
-      <button class="btn95" type="button" onclick="closeImage('${winId}')">&laquo; Back</button>
+      <button class="btn95 image-back" type="button" onclick="closeImage('${winId}')">&laquo; Back</button>
       <button class="btn95 image-lamp-source" type="button" aria-label="Toggle lamp" title="Toggle lamp" onclick="toggleImageLamp('${winId}')"><span aria-hidden="true">💡</span></button>
       <span class="image-name">${image.name}</span>
     </div>
