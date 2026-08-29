@@ -18,6 +18,12 @@ startMenu.innerHTML = `
     </div>
 
     <div class="sm-item"
+         onclick="closeStartMenu(); resetDesktopLayout();">
+      <img src="${ICON_URLS['drive']}">
+      Reset Desktop Layout
+    </div>
+
+    <div class="sm-item"
          onclick="closeStartMenu(); document.getElementById('myfiles')?.click ? null : (function(){})(); window.__openMyFiles && window.__openMyFiles();">
       <img src="${ICON_URLS['folder']}">
       Documents
@@ -95,6 +101,12 @@ function shutDown(){
     "It's now safe to close this browser tab. (Or don't. Fourier certainly won't judge you.)",
     'computer'
   );
+}
+
+function resetDesktopLayout(){
+  localStorage.removeItem(DESKTOP_ICON_STORAGE_KEY);
+  arrangeDesktopIcons();
+  closeStartMenu();
 }
 
 function resetComputer(){
