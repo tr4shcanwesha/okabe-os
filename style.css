@@ -134,18 +134,22 @@ body {
 #desktop {
   position:absolute; top:0; left:0; right:0; bottom:36px;
   padding:10px;
-  display:flex; flex-direction:column; flex-wrap:wrap; align-content:flex-start;
-  gap:2px;
+  overflow:hidden;
 }
 
 /* .icon - Individual icon container with label (each icon is ~74x74px) */
 .icon {
+  position:absolute;
   width:74px; height:74px;
   display:flex; flex-direction:column; align-items:center;
   padding:4px;
-  margin-bottom:6px;
   border:1px dotted transparent;
+  cursor:default;
+  user-select:none;
+  touch-action:none;
 }
+
+.icon.dragging { cursor:move; }
 
 /* Icon image/glyph - the visual icon graphic */
 .icon .glyph { width:32px; height:32px; margin-bottom:4px; }

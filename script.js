@@ -269,14 +269,183 @@ function showMessageBox(title, text, icon, onOk){
 /* ============================================================
    DESKTOP ICON FACTORY
    ============================================================ */
+const DESKTOP_ICON_STORAGE_KEY = 'okabe.desktop.iconPositions';
+const DESKTOP_GRID_COLUMNS = 2;
+const DESKTOP_GRID_CELL_WIDTH = 84;
+const DESKTOP_GRID_CELL_HEIGHT = 90;
+const DESKTOP_GRID_OFFSET_X = 12;
+const DESKTOP_GRID_OFFSET_Y = 10;
+const desktopIcons = new Map();
+const desktop = document.getElementById('desktop');
+
+function loadDesktopIconPositions(){
+  try {
+    const raw = localStorage.getItem(DESKTOP_ICON_STORAGE_KEY);
+    if(!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (error) {
+    return {};
+  }
+}
+
+function saveDesktopIconPositions(){
+  const positions = {};
+  desktopIcons.forEach((icon, id)=>{
+    positions[id] = { x: icon.x, y: icon.y };
+  });
+  localStorage.setItem(DESKTOP_ICON_STORAGE_KEY, JSON.stringify(positions));
+}
+
+function clampDesktopIconPosition(x, y, el){
+  const maxX = Math.max(0, desktop.clientWidth - (el.offsetWidth || 74) - 8);
+  const maxY = Math.max(0, desktop.clientHeight - (el.offsetHeight || 74) - 8);
+  return {
+    x: Math.min(Math.max(0, x), maxX),
+    y: Math.min(Math.max(0, y), maxY)
+  };
+}
+
+function rectsOverlap(a, b){
+  return !(
+    a.x + a.width <= b.x ||
+    b.x + b.width <= a.x ||
+    a.y + a.height <= b.y ||
+    b.y + b.height <= a.y
+  );
+}
+
+function hasDesktopIconOverlap(id, x, y, el){
+  const candidate = {
+    x,
+    y,
+    width: el.offsetWidth || 74,
+    height: el.offsetHeight || 74
+  };
+
+  for(const [otherId, icon] of desktopIcons.entries()){
+    if(otherId === id) continue;
+
+    const other = {
+      x: icon.x,
+      y: icon.y,
+      width: icon.el.offsetWidth || 74,
+      height: icon.el.offsetHeight || 74
+    };
+
+    if(rectsOverlap(candidate, other)) return true;
+  }
+
+  return false;
+}
+
+function getDesktopGridBounds(){
+  const maxCol = Math.max(0, Math.floor((desktop.clientWidth - DESKTOP_GRID_OFFSET_X - 8) / DESKTOP_GRID_CELL_WIDTH));
+  const maxRow = Math.max(0, Math.floor((desktop.clientHeight - DESKTOP_GRID_OFFSET_Y - 8) / DESKTOP_GRID_CELL_HEIGHT));
+  return { maxCol, maxRow };
+}
+
+function getNearestDesktopGridPosition(x, y){
+  const { maxCol, maxRow } = getDesktopGridBounds();
+  const col = Math.max(0, Math.min(maxCol, Math.round((x - DESKTOP_GRID_OFFSET_X) / DESKTOP_GRID_CELL_WIDTH)));
+  const row = Math.max(0, Math.min(maxRow, Math.round((y - DESKTOP_GRID_OFFSET_Y) / DESKTOP_GRID_CELL_HEIGHT)));
+
+  return {
+    x: DESKTOP_GRID_OFFSET_X + col * DESKTOP_GRID_CELL_WIDTH,
+    y: DESKTOP_GRID_OFFSET_Y + row * DESKTOP_GRID_CELL_HEIGHT
+  };
+}
+
+function snapDesktopIconPosition(x, y, el){
+  const nearest = getNearestDesktopGridPosition(x, y);
+  return clampDesktopIconPosition(nearest.x, nearest.y, el);
+}
+
+function arrangeDesktopIcons(){
+  const orderedIds = [...desktopIcons.keys()];
+
+  orderedIds.forEach((id, index)=>{
+    const icon = desktopIcons.get(id);
+    if(!icon) return;
+
+    const position = getDefaultDesktopIconPosition(index);
+    icon.x = position.x;
+    icon.y = position.y;
+    applyDesktopIconPosition(icon.el, position.x, position.y);
+  });
+
+  saveDesktopIconPositions();
+}
+
+function resolveDesktopIconPosition(id, x, y){
+  const el = desktopIcons.get(id)?.el;
+  if(!el) return { x, y };
+
+  const clamped = clampDesktopIconPosition(x, y, el);
+  const snapped = snapDesktopIconPosition(clamped.x, clamped.y, el);
+
+  if(!hasDesktopIconOverlap(id, snapped.x, snapped.y, el)){
+    return snapped;
+  }
+
+  const maxRadius = 120;
+  for(let radius = 1; radius <= maxRadius; radius++){
+    for(let offsetX = -radius; offsetX <= radius; offsetX++){
+      for(let offsetY = -radius; offsetY <= radius; offsetY++){
+        if(Math.abs(offsetX) + Math.abs(offsetY) !== radius) continue;
+
+        const probe = {
+          x: snapped.x + (offsetX * DESKTOP_GRID_CELL_WIDTH),
+          y: snapped.y + (offsetY * DESKTOP_GRID_CELL_HEIGHT)
+        };
+
+        const candidate = clampDesktopIconPosition(probe.x, probe.y, el);
+        if(!hasDesktopIconOverlap(id, candidate.x, candidate.y, el)){
+          return candidate;
+        }
+      }
+    }
+  }
+
+  return snapped;
+}
+
+function applyDesktopIconPosition(el, x, y){
+  const clamped = clampDesktopIconPosition(x, y, el);
+  el.style.left = `${clamped.x}px`;
+  el.style.top = `${clamped.y}px`;
+  el.dataset.x = String(clamped.x);
+  el.dataset.y = String(clamped.y);
+  return clamped;
+}
+
+function getDefaultDesktopIconPosition(index){
+  return {
+    x: DESKTOP_GRID_OFFSET_X + (index % DESKTOP_GRID_COLUMNS) * DESKTOP_GRID_CELL_WIDTH,
+    y: DESKTOP_GRID_OFFSET_Y + Math.floor(index / DESKTOP_GRID_COLUMNS) * DESKTOP_GRID_CELL_HEIGHT
+  };
+}
+
 function addDesktopIcon(id, iconKey, label, onOpen){
   const el = document.createElement('div');
   el.className = 'icon';
+  el.setAttribute('data-id', id);
 
   el.innerHTML = `
     <img class="glyph" src="${ICON_URLS[iconKey]}">
     <div class="label">${label}</div>
   `;
+
+  const savedPositions = loadDesktopIconPositions();
+  const defaultIndex = desktopIcons.size;
+  const savedPos = savedPositions[id] || getDefaultDesktopIconPosition(defaultIndex);
+  const position = {
+    x: savedPos.x ?? getDefaultDesktopIconPosition(defaultIndex).x,
+    y: savedPos.y ?? getDefaultDesktopIconPosition(defaultIndex).y
+  };
+
+  desktopIcons.set(id, { id, x: position.x, y: position.y, el });
+  applyDesktopIconPosition(el, position.x, position.y);
 
   el.addEventListener('click', (e)=>{
     document
@@ -292,10 +461,66 @@ function addDesktopIcon(id, iconKey, label, onOpen){
     e.stopPropagation();
   });
 
-  document.getElementById('desktop').appendChild(el);
+  let dragState = null;
+
+  el.addEventListener('pointerdown', (e)=>{
+    if(e.button !== 0) return;
+
+    const rect = el.getBoundingClientRect();
+    dragState = {
+      pointerId: e.pointerId,
+      offsetX: e.clientX - rect.left,
+      offsetY: e.clientY - rect.top,
+      startX: Number(el.dataset.x || 0),
+      startY: Number(el.dataset.y || 0)
+    };
+
+    el.setPointerCapture(e.pointerId);
+    el.classList.add('dragging');
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  el.addEventListener('pointermove', (e)=>{
+    if(!dragState || e.pointerId !== dragState.pointerId) return;
+
+    const desktopRect = desktop.getBoundingClientRect();
+    const nextX = e.clientX - desktopRect.left - dragState.offsetX;
+    const nextY = e.clientY - desktopRect.top - dragState.offsetY;
+    const clamped = clampDesktopIconPosition(nextX, nextY, el);
+
+    desktopIcons.get(id).x = clamped.x;
+    desktopIcons.get(id).y = clamped.y;
+    applyDesktopIconPosition(el, clamped.x, clamped.y);
+  });
+
+  el.addEventListener('pointerup', (e)=>{
+    if(!dragState || e.pointerId !== dragState.pointerId) return;
+
+    const current = desktopIcons.get(id);
+    const currentX = current ? current.x : Number(el.dataset.x || 0);
+    const currentY = current ? current.y : Number(el.dataset.y || 0);
+    const resolved = resolveDesktopIconPosition(id, currentX, currentY);
+
+    current.x = resolved.x;
+    current.y = resolved.y;
+    applyDesktopIconPosition(el, resolved.x, resolved.y);
+
+    dragState = null;
+    el.classList.remove('dragging');
+    el.releasePointerCapture(e.pointerId);
+    saveDesktopIconPositions();
+  });
+
+  el.addEventListener('pointercancel', ()=>{
+    dragState = null;
+    el.classList.remove('dragging');
+  });
+
+  desktop.appendChild(el);
 }
 
-document.getElementById('desktop').addEventListener('click', ()=>{
+desktop.addEventListener('click', ()=>{
   document
     .querySelectorAll('.icon.selected')
     .forEach(i => i.classList.remove('selected'));
